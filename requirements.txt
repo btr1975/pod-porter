@@ -1,5 +1,5 @@
 # These are the libraries required to run your app
 # They DO NOT include libraries needed to develop or test our app
 #
-Jinja2~=3.1.4
-PyYAML~=6.0.2
+jinja2~=3.1.4
+pyyaml~=6.0.2
