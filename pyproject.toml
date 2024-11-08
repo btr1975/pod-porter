@@ -1,0 +1,92 @@
+[build-system]
+requires = [
+    "setuptools>=67.6.0",
+    "wheel>=0.40.0"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pod-porter"
+dynamic = ["version", "readme", "dependencies"]
+requires-python = ">=3.9"
+description = "Like Helm but for Container Compose Files"
+keywords = [
+]
+authors = [
+  { name="Benjamin P. Trachtenberg", email="e_ben_75-python@yahoo.com" },
+]
+maintainers = [
+  {name = "Benjamin P. Trachtenberg", email = "e_ben_75-python@yahoo.com"},
+]
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX",
+    "Operating System :: POSIX :: BSD",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",]
+
+[project.urls]
+Documentation = "https://pod-porter.readthedocs.io/en/latest/"
+Source = "https://github.com/btr1975/pod-porter"
+Tracker = "https://github.com/btr1975/pod-porter/issues"
+
+
+[project.scripts]
+pod-porter-cli = "pod_porter:cli"
+
+
+[tool.setuptools.packages.find]
+include = [
+    "pod_porter*",
+]
+
+# Add or remove file extensions to include the data
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.rst"]
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.dynamic]
+version = {attr = "pod_porter.version.__version__"}
+readme = {file = "README.md", content-type = "text/markdown"}
+dependencies = {file = "requirements.txt"}
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers"
+markers = [
+    "place_holder: marks tests as place_holder (deselect with -m 'not place_holder')",
+]
+
+[tool.coverage.run]
+command_line= "-m pytest -vvv"
+
+[tool.coverage.report]
+include = [
+    "pod_porter/*"
+]
+fail_under = 70
+
+[tool.pylint]
+max-line-length = 120
+# This allows pylint to complain on FIXME and XXX notes
+notes = [
+    "FIXME",
+    "XXX",
+]
+fail-under = 9.9
+
+[tool.black]
+line-length = 120
