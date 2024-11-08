@@ -4,9 +4,6 @@ CLI for pod_porter
 
 from argparse import ArgumentParser
 
-#  FIXME: This is an example you should delete it
-from pod_porter.example import print_hello, print_goodbye
-
 
 def cli_argument_parser() -> ArgumentParser:
     """Function to create the argument parser
@@ -48,11 +45,6 @@ def cli() -> None:
         args = arg_parser.parse_args()
 
         print(args)
-        if args.which_sub == "hello":
-            print_hello(args.name)
-
-        if args.which_sub == "goodbye":
-            print_goodbye(args.name)
 
     except AttributeError as error:
         print(f"\n !!! {error} !!! \n")
