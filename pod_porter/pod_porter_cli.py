@@ -30,7 +30,7 @@ def cli_argument_parser() -> ArgumentParser:
     return arg_parser
 
 
-def cli() -> None:
+def cli() -> None:  # pragma: no cover
     """Function to run the command line
     :rtype: None
     :returns: Nothing it is the CLI
@@ -44,7 +44,6 @@ def cli() -> None:
         if args.which_sub == "template":
             obj = PorterMap(args.map, args.name)
             print(obj.render_compose())
-
 
     except AttributeError as error:
         print(f"\n !!! {error} !!! \n")
