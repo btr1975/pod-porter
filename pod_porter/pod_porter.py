@@ -101,6 +101,14 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         """
         return self._temp_working_directory
 
+    def get_map_data(self) -> dict:
+        """Get the map data
+
+        :rtype: dict
+        :returns: The map data
+        """
+        return self._map_data
+
     @staticmethod
     def get_yaml_data(path: str) -> dict:
         """Load the data from a yaml file and return it
@@ -269,6 +277,7 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
     def __init__(self, path: str, release_name: Optional[str] = None) -> None:
         self._path = path
         self._release_name = release_name or "release-name"
+        self._toplevel_map_data = {}
         self._all_maps = self._collect_maps()
         self._services = {"services": {}}
         self._configs = {"configs": {}}
@@ -286,13 +295,25 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
         """
         return f'PorterMapRunner(path="{self._path}", release_name="{self._release_name}")'
 
+    def get_map_data(self) -> dict:
+        """Get the map data
+
+        :rtype: dict
+        :returns: The map data
+        """
+        return self._toplevel_map_data
+
     def _collect_maps(self) -> List[_PorterMap]:
         """Collect all the maps in the directory
 
         :rtype: List[_PorterMap]
         :returns: A list of PorterMap objects
         """
-        maps = [_PorterMap(path=self._path, release_name=self._release_name)]
+        top_level_map = _PorterMap(path=self._path, release_name=self._release_name)
+
+        self._toplevel_map_data = top_level_map.get_map_data()
+
+        maps = [top_level_map]
 
         if os.path.isdir(os.path.join(self._path, "maps")):
             for single_map in os.listdir(os.path.join(self._path, "maps")):
