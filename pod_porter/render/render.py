@@ -1,3 +1,7 @@
+"""
+Rendering engine
+"""
+
 import os.path
 
 from jinja2 import Environment, FileSystemLoader, BaseLoader, select_autoescape

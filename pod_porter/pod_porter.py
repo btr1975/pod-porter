@@ -47,7 +47,7 @@ class PorterMap:
         :rtype: dict
         :returns: The data from the yaml
         """
-        with open(path, "r") as file:
+        with open(path, "r", encoding="utf-8") as file:
             data = safe_load(file.read())
 
         return data
