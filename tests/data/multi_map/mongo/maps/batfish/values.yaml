@@ -1,0 +1,15 @@
+---
+
+image:
+  batfish:
+    repository: "docker.io/batfish/allinone"
+    tag: "latest"
+
+service:
+  batfish:
+    - node_port: 8888
+      container_port: 8888
+    - node_port: 9997
+      container_port: 9997
+    - node_port: 9996
+      container_port: 9996

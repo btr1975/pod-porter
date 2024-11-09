@@ -10,7 +10,7 @@ from pod_porter.util.directories import create_temp_working_directory, delete_te
 from pod_porter.util.file_read_write import write_file
 
 
-class PorterMap:
+class _PorterMap:
     """A class to represent the PorterMap
 
     :type path: str
@@ -24,8 +24,8 @@ class PorterMap:
 
     def __init__(self, path: str, release_name: Optional[str] = None) -> None:
         self._temp_working_directory = create_temp_working_directory()
-        self.path = path
-        self.release_name = release_name or "release-name"
+        self._path = path
+        self._release_name = release_name or "release-name"
         self._map_data = self._get_map()
         self._values_data = self._get_values()
 
@@ -35,7 +35,7 @@ class PorterMap:
         if not self._values_data:
             raise ValueError("values_data is empty")
 
-        self._templates = self._get_templates(templates_path=os.path.join(self.path, "templates"))
+        self._templates = self._get_templates(templates_path=os.path.join(self._path, "templates"))
         self._pre_render()
         self._templates_pre_render = self._get_templates(templates_path=self._temp_working_directory)
         self._compose = {}
@@ -44,6 +44,62 @@ class PorterMap:
         self._volumes = self._get_volume_templates()
         self._secrets = self._get_secrets_templates()
         self._networks = self._get_network_templates()
+
+    def __repr__(self) -> str:
+        """Return the string representation of the object
+
+        :rtype: str
+        :returns: The string representation of the object
+        """
+        return f'PorterMap(path="{self._path}", release_name="{self._release_name}")'
+
+    def get_services(self) -> dict:
+        """Get the services data
+
+        :rtype: dict
+        :returns: The services data
+        """
+        return self._services
+
+    def get_configs(self) -> dict:
+        """Get the configs data
+
+        :rtype: dict
+        :returns: The configs data
+        """
+        return self._configs
+
+    def get_volumes(self) -> dict:
+        """Get the volumes data
+
+        :rtype: dict
+        :returns: The volumes data
+        """
+        return self._volumes
+
+    def get_secrets(self) -> dict:
+        """Get the secrets data
+
+        :rtype: dict
+        :returns: The secrets data
+        """
+        return self._secrets
+
+    def get_networks(self) -> dict:
+        """Get the networks data
+
+        :rtype: dict
+        :returns: The networks data
+        """
+        return self._networks
+
+    def get_temp_working_directory(self) -> str:
+        """Get the temp working directory
+
+        :rtype: str
+        :returns: The working directory
+        """
+        return self._temp_working_directory
 
     @staticmethod
     def get_yaml_data(path: str) -> dict:
@@ -161,7 +217,7 @@ class PorterMap:
         :rtype: dict
         :returns: The data from the map.yaml
         """
-        map_path = os.path.join(self.path, "Map.yaml")
+        map_path = os.path.join(self._path, "Map.yaml")
 
         if not os.path.isfile(map_path):
             raise FileNotFoundError("Map.yaml not found")
@@ -174,24 +230,12 @@ class PorterMap:
         :rtype: dict
         :returns: The data from the values.yaml
         """
-        values_path = os.path.join(self.path, "values.yaml")
+        values_path = os.path.join(self._path, "values.yaml")
 
         if not os.path.isfile(values_path):
             raise FileNotFoundError("values.yaml not found")
 
-        return {"values": self.get_yaml_data(values_path), "release": {"name": self.release_name}}
-
-    def render_compose(self) -> str:
-        """Render the compose file
-
-        :rtype: str
-        :returns: The rendered compose file
-        """
-        render_obj = Render()
-        delete_temp_working_directory(self._temp_working_directory)
-        return render_obj.from_file(
-            template_name="compose-layout.j2", render_vars={"compose_data": safe_dump(self._compose)}
-        )
+        return {"values": self.get_yaml_data(values_path), "release": {"name": self._release_name}}
 
     def _pre_render(self) -> None:
         """Pre-render the templates from the map
@@ -199,7 +243,7 @@ class PorterMap:
         :rtype: None
         :returns: Nothing it writes rendered templates to the temp working directory
         """
-        templates_path = os.path.join(self.path, "templates")
+        templates_path = os.path.join(self._path, "templates")
         render_obj = Render(templates_dir=templates_path)
         for path in self._templates:
             template = os.path.split(path)[1]
@@ -208,3 +252,82 @@ class PorterMap:
                 template,
                 render_obj.from_file(template_name=template, render_vars=self._values_data),
             )
+
+
+class PorterMapsRunner:
+    """A class to represent the PorterMapRunner for collecting and running maps
+
+    :type path: str
+    :param path: The path to the directory containing the map.yaml and values.yaml files
+    :type release_name: Optional[str] = None
+    :param release_name: The name of the release
+
+    :rtype: None
+    :returns: Nothing
+    """
+
+    def __init__(self, path: str, release_name: Optional[str] = None) -> None:
+        self._path = path
+        self._release_name = release_name or "release-name"
+        self._all_maps = self._collect_maps()
+        self._services = {"services": {}}
+        self._configs = {"configs": {}}
+        self._volumes = {"volumes": {}}
+        self._secrets = {"secrets": {}}
+        self._networks = {"networks": {}}
+        self._compose = {}
+        self._merge_maps()
+
+    def __repr__(self) -> str:
+        """Return the string representation of the object
+
+        :rtype: str
+        :returns: The string representation of the object
+        """
+        return f'PorterMapRunner(path="{self._path}", release_name="{self._release_name}")'
+
+    def _collect_maps(self) -> List[_PorterMap]:
+        """Collect all the maps in the directory
+
+        :rtype: List[_PorterMap]
+        :returns: A list of PorterMap objects
+        """
+        maps = [_PorterMap(path=self._path, release_name=self._release_name)]
+
+        if os.path.isdir(os.path.join(self._path, "maps")):
+            for single_map in os.listdir(os.path.join(self._path, "maps")):
+                maps.append(
+                    _PorterMap(path=os.path.join(self._path, "maps", single_map), release_name=self._release_name)
+                )
+
+        return maps
+
+    def render_compose(self) -> str:
+        """Render the compose file
+
+        :rtype: str
+        :returns: The rendered compose file
+        """
+        render_obj = Render()
+        return render_obj.from_file(
+            template_name="compose-layout.j2", render_vars={"compose_data": safe_dump(self._compose)}
+        )
+
+    def _merge_maps(self) -> None:
+        """Merge all the maps into a single compose file
+
+        :rtype: None
+        :returns: Nothing
+        """
+        for single_map in self._all_maps:
+            self._services["services"].update(single_map.get_services().get("services"))
+            self._configs["configs"].update(single_map.get_configs().get("configs"))
+            self._volumes["volumes"].update(single_map.get_volumes().get("volumes"))
+            self._secrets["secrets"].update(single_map.get_secrets().get("secrets"))
+            self._networks["networks"].update(single_map.get_networks().get("networks"))
+            delete_temp_working_directory(single_map.get_temp_working_directory())
+        self._compose.update(self._services)
+        self._compose.update(self._configs)
+        self._compose.update(self._volumes)
+        self._compose.update(self._secrets)
+        self._compose.update(self._networks)

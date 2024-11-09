@@ -3,7 +3,7 @@ CLI for pod_porter
 """
 
 from argparse import ArgumentParser
-from pod_porter.pod_porter import PorterMap
+from pod_porter.pod_porter import PorterMapsRunner
 
 
 def cli_argument_parser() -> ArgumentParser:
@@ -42,7 +42,7 @@ def cli() -> None:  # pragma: no cover
         args = arg_parser.parse_args()
 
         if args.which_sub == "template":
-            obj = PorterMap(args.map, args.name)
+            obj = PorterMapsRunner(args.map, args.name)
             print(obj.render_compose())
 
     except AttributeError as error:

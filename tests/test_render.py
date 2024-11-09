@@ -11,6 +11,6 @@ def test_render_from_string():
 
 def test_render_from_fileg(templates_path):
     obj = Render(templates_dir=templates_path)
-    response = obj.from_file(template_name="test-template.j2" ,render_vars= {"data": "Hello, World!"})
+    response = obj.from_file(template_name="test-template.j2", render_vars={"data": "Hello, World!"})
 
     assert response == "Hello, World!"
