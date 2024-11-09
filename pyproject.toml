@@ -44,7 +44,7 @@ Tracker = "https://github.com/btr1975/pod-porter/issues"
 
 
 [project.scripts]
-pod-porter-cli = "pod_porter:cli"
+pod-porter = "pod_porter:cli"
 
 
 [tool.setuptools.packages.find]

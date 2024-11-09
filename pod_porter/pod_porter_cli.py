@@ -3,6 +3,7 @@ CLI for pod_porter
 """
 
 from argparse import ArgumentParser
+from pod_porter.pod_porter import PorterMap
 
 
 def cli_argument_parser() -> ArgumentParser:
@@ -11,7 +12,7 @@ def cli_argument_parser() -> ArgumentParser:
     :rtype: ArgumentParser
     :returns: The argument parser
     """
-    arg_parser = ArgumentParser(description="pod-porter-cli")
+    arg_parser = ArgumentParser(description="pod-porter")
     subparsers = arg_parser.add_subparsers(
         title="commands",
         description="Valid commands: a single command is required",
@@ -21,14 +22,10 @@ def cli_argument_parser() -> ArgumentParser:
     subparsers.required = True
 
     # This is the sub parser to print hello
-    arg_parser_hello = subparsers.add_parser("hello", help="Say Hello")
-    arg_parser_hello.set_defaults(which_sub="hello")
-    arg_parser_hello.add_argument("-n", "--name", required=True, help="Your name")
-
-    # This is the sub parser to print goodbye
-    arg_parser_goodbye = subparsers.add_parser("goodbye", help="Say Goodbye")
-    arg_parser_goodbye.set_defaults(which_sub="goodbye")
-    arg_parser_goodbye.add_argument("-n", "--name", required=True, help="Your name")
+    arg_parser_template = subparsers.add_parser("template", help="View the rendered compose file")
+    arg_parser_template.set_defaults(which_sub="template")
+    arg_parser_template.add_argument("-n", "--name", required=True, help="Release name")
+    arg_parser_template.add_argument("-m", "--map", required=True, help="Path to the map")
 
     return arg_parser
 
@@ -44,7 +41,10 @@ def cli() -> None:
         arg_parser = cli_argument_parser()
         args = arg_parser.parse_args()
 
-        print(args)
+        if args.which_sub == "template":
+            obj = PorterMap(args.map, args.name)
+            print(obj.render_compose())
+
 
     except AttributeError as error:
         print(f"\n !!! {error} !!! \n")

@@ -2,7 +2,7 @@
 Pod Porter Main Application
 """
 
-from typing import List
+from typing import List, Optional
 import os
 from yaml import safe_load, safe_dump
 from pod_porter.render.render import Render
@@ -15,14 +15,17 @@ class PorterMap:
 
     :type path: str
     :param path: The path to the directory containing the map.yaml and values.yaml files
+    :type release_name: Optional[str] = None
+    :param release_name: The name of the release
 
     :rtype: None
     :returns: Nothing
     """
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str, release_name: Optional[str] = None) -> None:
         self._temp_working_directory = create_temp_working_directory()
         self.path = path
+        self.release_name = release_name or "release-name"
         self._map_data = self._get_map()
         self._values_data = self._get_values()
 
@@ -176,7 +179,7 @@ class PorterMap:
         if not os.path.isfile(values_path):
             raise FileNotFoundError("values.yaml not found")
 
-        return {"values": self.get_yaml_data(values_path)}
+        return {"values": self.get_yaml_data(values_path), "release": {"name": self.release_name}}
 
     def render_compose(self) -> str:
         """Render the compose file
