@@ -161,10 +161,10 @@ class PorterMap:
         :rtype: dict
         :returns: The data from the map.yaml
         """
-        map_path = os.path.join(self.path, "map.yaml")
+        map_path = os.path.join(self.path, "Map.yaml")
 
         if not os.path.isfile(map_path):
-            raise FileNotFoundError("map.yaml not found")
+            raise FileNotFoundError("Map.yaml not found")
 
         return self.get_yaml_data(map_path)
 
