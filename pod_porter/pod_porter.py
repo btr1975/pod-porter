@@ -6,6 +6,8 @@ from typing import List
 import os
 from yaml import safe_load, safe_dump
 from pod_porter.render.render import Render
+from pod_porter.util.directories import create_temp_working_directory, delete_temp_working_directory
+from pod_porter.util.file_read_write import write_file
 
 
 class PorterMap:
@@ -19,23 +21,26 @@ class PorterMap:
     """
 
     def __init__(self, path: str) -> None:
+        self._temp_working_directory = create_temp_working_directory()
         self.path = path
-
         self._map_data = self._get_map()
         self._values_data = self._get_values()
-        self._templates = self._get_templates()
-        self._compose = {}
-        self._services = self._get_service_templates()
-        self._configs = self._get_config_templates()
-        self._volumes = self._get_volume_templates()
-        self._secrets = self._get_secrets_templates()
-        self._networks = self._get_network_templates()
 
         if not self._map_data:
             raise ValueError("map_data is empty")
 
         if not self._values_data:
             raise ValueError("values_data is empty")
+
+        self._templates = self._get_templates(templates_path=os.path.join(self.path, "templates"))
+        self._pre_render()
+        self._templates_pre_render = self._get_templates(templates_path=self._temp_working_directory)
+        self._compose = {}
+        self._services = self._get_service_templates()
+        self._configs = self._get_config_templates()
+        self._volumes = self._get_volume_templates()
+        self._secrets = self._get_secrets_templates()
+        self._networks = self._get_network_templates()
 
     @staticmethod
     def get_yaml_data(path: str) -> dict:
@@ -52,14 +57,17 @@ class PorterMap:
 
         return data
 
-    def _get_templates(self) -> List[str]:
+    @staticmethod
+    def _get_templates(templates_path: str) -> List[str]:
         """Get a list of all the template files in the templates directory
+
+        :type templates_path: str
+        :param templates_path: The path to the templates directory
 
         :rtype: List[str]
         :returns: A list of all the template files in the templates directory
         """
         template_files = []
-        templates_path = os.path.join(self.path, "templates")
 
         for item in os.listdir(templates_path):
             if os.path.isfile(os.path.join(templates_path, item)):
@@ -77,7 +85,7 @@ class PorterMap:
         :returns: The data for the compose type
         """
         services = {compose_type: {}}
-        for template in self._templates:
+        for template in self._templates_pre_render:
             template_dict = self.get_yaml_data(template)
             if template_dict.get(compose_type):
                 services.get(compose_type).update(template_dict[compose_type])
@@ -177,5 +185,23 @@ class PorterMap:
         :returns: The rendered compose file
         """
         render_obj = Render()
-        data = render_obj.from_string(template_string=safe_dump(self._compose), render_vars=self._values_data)
-        return render_obj.from_file(template_name="compose-layout.j2", render_vars={"compose_data": data})
+        delete_temp_working_directory(self._temp_working_directory)
+        return render_obj.from_file(
+            template_name="compose-layout.j2", render_vars={"compose_data": safe_dump(self._compose)}
+        )
+
+    def _pre_render(self) -> None:
+        """Pre-render the templates from the map
+
+        :rtype: None
+        :returns: Nothing it writes rendered templates to the temp working directory
+        """
+        templates_path = os.path.join(self.path, "templates")
+        render_obj = Render(templates_dir=templates_path)
+        for path in self._templates:
+            template = os.path.split(path)[1]
+            write_file(
+                self._temp_working_directory,
+                template,
+                render_obj.from_file(template_name=template, render_vars=self._values_data),
+            )

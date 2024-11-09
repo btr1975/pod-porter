@@ -2,6 +2,7 @@
 Rendering engine
 """
 
+from typing import Optional
 import os.path
 
 from jinja2 import Environment, FileSystemLoader, BaseLoader, select_autoescape
@@ -10,6 +11,9 @@ from jinja2 import Environment, FileSystemLoader, BaseLoader, select_autoescape
 class Render:
     """Render the templates class
 
+    :type templates_dir: Optional[str] = None
+    :param templates_dir: The directory where the templates are located
+
     :rtype: None
     :returns: Nothing
     """
@@ -17,7 +21,13 @@ class Render:
     BASE_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
     TEMPLATE_DIRECTORY = os.path.join(BASE_DIRECTORY, "templates")
 
-    def __init__(self) -> None:
+    def __init__(self, templates_dir: Optional[str] = None) -> None:
+        if templates_dir:
+            self.templates_dir = templates_dir
+
+        else:
+            self.templates_dir = self.TEMPLATE_DIRECTORY
+
         self.env_file_render = self.__set_template_file_render_environment()
         self.env_string_render = self.__set_template_string_render_environment()
 
@@ -29,7 +39,7 @@ class Render:
         """
         return Environment(
             autoescape=select_autoescape(enabled_extensions="yaml", default_for_string=True),
-            loader=FileSystemLoader(searchpath=self.TEMPLATE_DIRECTORY),
+            loader=FileSystemLoader(searchpath=self.templates_dir),
             trim_blocks=True,
             lstrip_blocks=True,
         )
