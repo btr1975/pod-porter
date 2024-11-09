@@ -1,0 +1,8 @@
+---
+services:
+  batfish:
+    image: "fake"
+    hostname: "fake"
+    container_name: "fake"
+    volumes:
+      - "batfish-data-compose:/data"

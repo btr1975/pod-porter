@@ -33,3 +33,11 @@ def multi_map_path(base_data_path):
 @pytest.fixture
 def multi_map_rendered_path(base_data_path):
     return os.path.join(base_data_path, "multi_map", "rendered.yaml")
+
+
+def map_path_bad_values(base_data_path):
+    return os.path.join(base_data_path, "bad_maps", "bad-values-file")
+
+
+def map_path_bad_map(base_data_path):
+    return os.path.join(base_data_path, "bad_maps", "bad-maps-file")

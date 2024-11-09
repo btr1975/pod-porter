@@ -10,7 +10,7 @@ from pod_porter.util.directories import create_temp_working_directory, delete_te
 from pod_porter.util.file_read_write import write_file
 
 
-class _PorterMap:
+class _PorterMap:  # pylint: disable=too-many-instance-attributes
     """A class to represent the PorterMap
 
     :type path: str
@@ -254,7 +254,7 @@ class _PorterMap:
             )
 
 
-class PorterMapsRunner:
+class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
     """A class to represent the PorterMapRunner for collecting and running maps
 
     :type path: str
