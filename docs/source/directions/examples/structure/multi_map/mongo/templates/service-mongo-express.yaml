@@ -1,0 +1,13 @@
+---
+services:
+  mongo-express:
+    image: "{{ values.image.mongo_express.repository }}:{{ values.image.mongo_express.tag }}"
+    hostname: "{{ release.name }}-mongo-express"
+    container_name: "{{ release.name }}-mongo-express"
+    ports:
+      - "{{ values.service.mongo_express.node_port }}:{{ values.service.mongo_express.container_port }}"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: "{{ release.name }}-mongo"
+      {% for env in values.environment.mongo_express %}
+      {{ env.name }}: "{{ env.value }}"
+      {% endfor %}

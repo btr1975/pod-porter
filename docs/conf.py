@@ -90,7 +90,7 @@ elif html_theme == 'sphinx_rtd_theme':
         # 'analytics_id': 'G-XXXXXXXXXX',
         # 'analytics_anonymize_ip': False,
         'logo_only': False,
-        'display_version': True,
+        # 'display_version': True,
         'prev_next_buttons_location': 'bottom',
         'style_external_links': False,
         'vcs_pageview_mode': '',
@@ -124,3 +124,14 @@ source_suffix = {
     '.rst': 'restructuredtext',
     '.md': 'markdown',
 }
+
+
+rst_epilog = """
+
+.. _HELM: https://helm.sh
+.. _Kubernetes: https://kubernetes.io
+.. _`Compose Specification`: https://compose-spec.io/
+.. _`Podman`: https://podman.io/
+.. _`Docker`: https://docker.com
+.. _Jinja2: https://jinja.palletsprojects.com/en/stable/
+"""
