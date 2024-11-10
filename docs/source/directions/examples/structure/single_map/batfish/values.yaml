@@ -9,7 +9,10 @@ service:
   batfish:
     - node_port: 8888
       container_port: 8888
+      name: "jupyter-notebook"
     - node_port: 9997
       container_port: 9997
+      name: "java1"
     - node_port: 9996
       container_port: 9996
+      name: "java2"
