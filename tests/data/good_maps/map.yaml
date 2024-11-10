@@ -1,0 +1,5 @@
+api_version: v1
+app_version: 4.4.0
+description: MongoDB map
+name: mongo
+version: 1.0.0

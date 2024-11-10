@@ -55,8 +55,8 @@ def cli() -> None:  # pragma: no cover
 
         if args.which_sub == "template_write":
             obj = PorterMapsRunner(args.map, args.name)
-            map_name = obj.get_map_data().get("name")
-            map_version = obj.get_map_data().get("version")
+            map_name = obj.get_map_data().name
+            map_version = obj.get_map_data().version
             file_name = f"{args.name}-{map_name}-{map_version}.yaml"
             write_file(path=args.output, file_name=file_name, data=obj.render_compose())
 

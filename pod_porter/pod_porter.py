@@ -8,6 +8,7 @@ from yaml import safe_load, safe_dump
 from pod_porter.render.render import Render
 from pod_porter.util.directories import create_temp_working_directory, delete_temp_working_directory
 from pod_porter.util.file_read_write import write_file
+from pod_porter.util.schemas import MapSchema
 
 
 class _PorterMap:  # pylint: disable=too-many-instance-attributes
@@ -101,10 +102,10 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         """
         return self._temp_working_directory
 
-    def get_map_data(self) -> dict:
+    def get_map_data(self) -> MapSchema:
         """Get the map data
 
-        :rtype: dict
+        :rtype: MapSchema
         :returns: The map data
         """
         return self._map_data
@@ -219,18 +220,18 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
 
         return secrets
 
-    def _get_map(self) -> dict:
+    def _get_map(self) -> MapSchema:
         """Load the map.yaml file and return the data
 
-        :rtype: dict
-        :returns: The data from the map.yaml
+        :rtype: MapSchema
+        :returns: The validated data from the map.yaml
         """
         map_path = os.path.join(self._path, "Map.yaml")
 
         if not os.path.isfile(map_path):
             raise FileNotFoundError("Map.yaml not found")
 
-        return self.get_yaml_data(map_path)
+        return MapSchema(**self.get_yaml_data(map_path))
 
     def _get_values(self) -> dict:
         """Load the values.yaml file and return the data
@@ -277,7 +278,7 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
     def __init__(self, path: str, release_name: Optional[str] = None) -> None:
         self._path = path
         self._release_name = release_name or "release-name"
-        self._toplevel_map_data = {}
+        self._toplevel_map_data = None
         self._all_maps = self._collect_maps()
         self._services = {"services": {}}
         self._configs = {"configs": {}}
@@ -295,10 +296,10 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
         """
         return f'PorterMapRunner(path="{self._path}", release_name="{self._release_name}")'
 
-    def get_map_data(self) -> dict:
+    def get_map_data(self) -> MapSchema:
         """Get the map data
 
-        :rtype: dict
+        :rtype: MapSchema
         :returns: The map data
         """
         return self._toplevel_map_data

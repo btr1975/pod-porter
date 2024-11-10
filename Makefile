@@ -59,7 +59,10 @@ remove-container:
 	@podman rm pod-porter
 
 
-
+gh-pages:
+	@rm -rf ./docs/source/code
+	@sphinx-apidoc -o ./docs/source/code ./pod_porter
+	@sphinx-build ./docs ./docs/gh-pages
 
 check-vuln:
 	@pip-audit -r requirements.txt

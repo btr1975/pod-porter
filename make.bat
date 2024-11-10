@@ -44,7 +44,12 @@ IF "%1" == "check-vuln" (
     GOTO END
 )
 
-
+IF "%1" == "gh-pages" (
+    rmdir /s /q docs\source\code
+    sphinx-apidoc -o ./docs/source/code ./pod_porter
+    sphinx-build ./docs ./docs/gh-pages
+    GOTO END
+)
 
 @ECHO make options
 @ECHO     all             To run coverage, format, pylint, and check-vuln
