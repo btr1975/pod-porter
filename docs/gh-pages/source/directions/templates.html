@@ -19,6 +19,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="pod-porter CLI" href="the-cli.html" />
     <link rel="prev" title="pod-porter Values" href="values.html" /> 
 </head>
 
@@ -49,6 +50,7 @@
 <li class="toctree-l2"><a class="reference internal" href="maps.html">pod-porter Maps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="values.html">pod-porter Values</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">pod-porter Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-cli.html">pod-porter CLI</a></li>
 </ul>
 </li>
 </ul>
@@ -132,11 +134,89 @@ directory in the map.  The templates are rendered using the values from the <cit
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Example template for MongoDB secrets</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="code-block-caption"><span class="caption-text">Example template for MongoDB volumes</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
 <div class="highlight-jinja notranslate"><div class="highlight"><pre><span></span><span class="x">---</span>
-<span class="x">secrets:</span>
-<span class="x">  key:</span>
-<span class="x">    external: true</span>
+<span class="x">volumes:</span>
+<span class="x">  </span><span class="cp">{%</span> <span class="k">for</span> <span class="nv">volume</span> <span class="k">in</span> <span class="nv">values.volumes.mongo</span> <span class="cp">%}</span>
+<span class="x">  </span><span class="cp">{{</span> <span class="nv">volume.name</span> <span class="cp">}}</span><span class="x">:</span>
+<span class="x">  </span><span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Example template for Batfish service</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-jinja notranslate"><div class="highlight"><pre><span></span><span class="x">---</span>
+<span class="x">services:</span>
+<span class="x">  batfish:</span>
+<span class="x">    image: &quot;</span><span class="cp">{{</span> <span class="nv">values.image.batfish.repository</span> <span class="cp">}}</span><span class="x">:</span><span class="cp">{{</span> <span class="nv">values.image.batfish.tag</span> <span class="cp">}}</span><span class="x">&quot;</span>
+<span class="x">    hostname: &quot;</span><span class="cp">{{</span> <span class="nv">release.name</span> <span class="cp">}}</span><span class="x">-batfish&quot;</span>
+<span class="x">    container_name: &quot;</span><span class="cp">{{</span> <span class="nv">release.name</span> <span class="cp">}}</span><span class="x">-batfish&quot;</span>
+<span class="x">    ports:</span>
+<span class="x">      </span><span class="cp">{%</span> <span class="k">for</span> <span class="nv">port</span> <span class="k">in</span> <span class="nv">values.service.batfish</span> <span class="cp">%}</span>
+<span class="x">      - &quot;</span><span class="cp">{{</span> <span class="nv">port.node_port</span> <span class="cp">}}</span><span class="x">:</span><span class="cp">{{</span> <span class="nv">port.container_port</span> <span class="cp">}}</span><span class="x">&quot;</span>
+<span class="x">      </span><span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+<span class="x">    volumes:</span>
+<span class="x">      - &quot;batfish-data-compose:/data&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Example template for Batfish volumes</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-jinja notranslate"><div class="highlight"><pre><span></span><span class="x">---</span>
+<span class="x">volumes:</span>
+<span class="x">  batfish-data-compose:</span>
+</pre></div>
+</div>
+</div>
+<p>Using these templates and the values from the <cite>values.yaml</cite> file, pod-porter will render the compose files.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pod-porter<span class="w"> </span>write<span class="w"> </span>-n<span class="w"> </span>thing<span class="w"> </span>-m<span class="w"> </span>docs<span class="se">\s</span>ource<span class="se">\d</span>irections<span class="se">\e</span>xamples<span class="se">\s</span>tructure<span class="se">\m</span>ulti_map<span class="se">\m</span>ongo<span class="w"> </span>-o<span class="w"> </span>docs<span class="se">\s</span>ource<span class="se">\d</span>irections<span class="se">\e</span>xamples<span class="se">\s</span>tructure<span class="se">\m</span>ulti_map
+</pre></div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Example rendered compose file for MongoDB service it names itself thing-mongo-1.0.0.yaml</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="nt">configs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="nt">networks</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="nt">secrets</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">key</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">external</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">batfish</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thing-batfish</span>
+<span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thing-batfish</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.io/batfish/allinone:latest</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8888:8888</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9997:9997</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9996:9996</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">batfish-data-compose:/data</span>
+<span class="w">  </span><span class="nt">mongo</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thing-mongo</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">MONGO_INITDB_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example</span>
+<span class="w">      </span><span class="nt">MONGO_INITDB_ROOT_USERNAME</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thing-mongo</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.io/library/mongo:8.0.3</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">27017:27017</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mongo-data-db-compose:/data/db</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mongo-data-configdb-compose:/data/configdb</span>
+<span class="w">  </span><span class="nt">mongo-express</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thing-mongo-express</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">ME_CONFIG_MONGODB_ADMINPASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example</span>
+<span class="w">      </span><span class="nt">ME_CONFIG_MONGODB_ADMINUSERNAME</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<span class="w">      </span><span class="nt">ME_CONFIG_MONGODB_SERVER</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thing-mongo</span>
+<span class="w">    </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">thing-mongo-express</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.io/library/mongo-express:1.0.2</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8181:8081</span>
+<span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">batfish-data-compose</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">mongo-data-configdb-compose</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">mongo-data-db-compose</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 </pre></div>
 </div>
 </div>
@@ -147,6 +227,7 @@ directory in the map.  The templates are rendered using the values from the <cit
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="values.html" class="btn btn-neutral float-left" title="pod-porter Values" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="the-cli.html" class="btn btn-neutral float-right" title="pod-porter CLI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -82,7 +82,8 @@
   <section id="pod-porter-values">
 <h1>pod-porter Values<a class="headerlink" href="#pod-porter-values" title="Link to this heading"></a></h1>
 <p>Just like in <a class="reference external" href="https://helm.sh">HELM</a> the variable values are stored in a values.yaml.  A values.yaml file is required, but it
-can be empty.  There is no specific structure to it at this time.</p>
+can be empty.  There is no specific structure to it at this time.  The file <strong>MUST</strong> be named <cite>values.yaml</cite>
+and <strong>MUST</strong> be located in the root of the of the map.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Example values.yaml</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
@@ -90,10 +91,10 @@ can be empty.  There is no specific structure to it at this time.</p>
 <span class="nt">image</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">mongo</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;docker.io/library/mongo&quot;</span>
-<span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;latest&quot;</span>
+<span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8.0.3&quot;</span>
 <span class="w">  </span><span class="nt">mongo_express</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;docker.io/library/mongo-express&quot;</span>
-<span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;latest&quot;</span>
+<span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.0.2&quot;</span>
 
 <span class="nt">service</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">mongo</span><span class="p">:</span>

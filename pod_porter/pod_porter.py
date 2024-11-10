@@ -18,23 +18,22 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
     :param path: The path to the directory containing the map.yaml and values.yaml files
     :type release_name: Optional[str] = None
     :param release_name: The name of the release
+    :type values_override: values_override: Optional[str] = None
+    :param values_override: The path to the yaml to override with
 
     :rtype: None
     :returns: Nothing
     """
 
-    def __init__(self, path: str, release_name: Optional[str] = None) -> None:
+    def __init__(self, path: str, release_name: Optional[str] = None, values_override: Optional[str] = None) -> None:
         self._temp_working_directory = create_temp_working_directory()
         self._path = path
         self._release_name = release_name or "release-name"
         self._map_data = self._get_map()
-        self._values_data = self._get_values()
+        self._values_data = self._get_values(values_override=values_override)
 
         if not self._map_data:
             raise ValueError("map_data is empty")
-
-        if not self._values_data:
-            raise ValueError("values_data is empty")
 
         self._templates = self._get_templates(templates_path=os.path.join(self._path, "templates"))
         self._pre_render()
@@ -233,16 +232,20 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
 
         return MapSchema(**self.get_yaml_data(map_path))
 
-    def _get_values(self) -> dict:
+    def _get_values(self, values_override: Optional[str] = None) -> dict:
         """Load the values.yaml file and return the data
 
         :rtype: dict
         :returns: The data from the values.yaml
         """
-        values_path = os.path.join(self._path, "values.yaml")
+        if not values_override:
+            values_path = os.path.join(self._path, "values.yaml")
+
+        else:
+            values_path = values_override
 
         if not os.path.isfile(values_path):
-            raise FileNotFoundError("values.yaml not found")
+            raise FileNotFoundError(f"values file '{values_path}' not found")
 
         return {"values": self.get_yaml_data(values_path), "release": {"name": self._release_name}}
 
@@ -275,9 +278,10 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
     :returns: Nothing
     """
 
-    def __init__(self, path: str, release_name: Optional[str] = None) -> None:
+    def __init__(self, path: str, release_name: Optional[str] = None, values_override: Optional[str] = None) -> None:
         self._path = path
         self._release_name = release_name or "release-name"
+        self._values_override = values_override
         self._toplevel_map_data = None
         self._all_maps = self._collect_maps()
         self._services = {"services": {}}
@@ -310,7 +314,9 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
         :rtype: List[_PorterMap]
         :returns: A list of PorterMap objects
         """
-        top_level_map = _PorterMap(path=self._path, release_name=self._release_name)
+        top_level_map = _PorterMap(
+            path=self._path, release_name=self._release_name, values_override=self._values_override
+        )
 
         self._toplevel_map_data = top_level_map.get_map_data()
 

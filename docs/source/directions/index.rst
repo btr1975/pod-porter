@@ -8,3 +8,4 @@ pod-porter Directions
    maps
    values
    templates
+   the-cli

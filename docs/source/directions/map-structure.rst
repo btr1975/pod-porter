@@ -1,7 +1,7 @@
 pod-porter Map Structure
 `````````````````````````````````````````````
 
-* This is the basic structure of a pod-porter map.  This is what I expect most people to use.
+* This is the basic structure of a pod-porter map.  This is what I expect most people will use.
   It is very similar to a HELM_ chart.
 
 
@@ -43,7 +43,7 @@ pod-porter Map Structure
 .. code-block:: bash
    :caption: Example map of a MongoDB and MongoDB-Express Deployment
 
-   mogn
+   mongo
      |
      |-> templates
      |      |-> service-mongo.yaml

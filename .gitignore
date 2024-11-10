@@ -134,7 +134,8 @@ dmypy.json
 # No vscode
 .vscode/
 
-# No temp_*.py files
+# No temp_*.py and other files
 temp_*.py
+temp_values.yaml
 
 temp_structure/

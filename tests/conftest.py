@@ -35,6 +35,11 @@ def single_map_rendered_path(base_data_path) -> str:
 
 
 @pytest.fixture
+def single_map_rendered_path_other_values(base_data_path) -> str:
+    return os.path.join(base_data_path, "other-values-files", "rendered.yaml")
+
+
+@pytest.fixture
 def multi_map_path(base_data_path) -> str:
     return os.path.join(base_data_path, "multi_map", "mongo")
 
@@ -52,6 +57,16 @@ def map_path_bad_values(base_data_path) -> str:
 @pytest.fixture
 def map_path_bad_map(base_data_path) -> str:
     return os.path.join(base_data_path, "bad_maps", "bad-maps-file")
+
+
+@pytest.fixture
+def map_path_no_map(base_data_path) -> str:
+    return os.path.join(base_data_path, "bad_maps", "no-maps-file")
+
+
+@pytest.fixture
+def other_values_file(base_data_path) -> str:
+    return os.path.join(base_data_path, "other-values-files", "other1.yaml")
 
 
 @pytest.fixture
