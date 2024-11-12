@@ -99,7 +99,7 @@
 </ul>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter -h” output</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">{</span>template,write,package,un-package<span class="o">}</span><span class="w"> </span>...
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">{</span>template,write,package,un-package,create<span class="o">}</span><span class="w"> </span>...
 
 pod-porter<span class="w"> </span>version:<span class="w"> </span><span class="m">0</span>.1.0
 
@@ -109,12 +109,13 @@ options:
 commands:
 <span class="w">  </span>Valid<span class="w"> </span>commands:<span class="w"> </span>a<span class="w"> </span>single<span class="w"> </span><span class="nb">command</span><span class="w"> </span>is<span class="w"> </span>required
 
-<span class="w">  </span><span class="o">{</span>template,write,package,un-package<span class="o">}</span>
+<span class="w">  </span><span class="o">{</span>template,write,package,un-package,create<span class="o">}</span>
 <span class="w">                        </span>CLI<span class="w"> </span>Help
 <span class="w">    </span>template<span class="w">            </span>View<span class="w"> </span>the<span class="w"> </span>rendered<span class="w"> </span>compose<span class="w"> </span>file
 <span class="w">    </span>write<span class="w">               </span>Write<span class="w"> </span>the<span class="w"> </span>rendered<span class="w"> </span>compose<span class="w"> </span>file
 <span class="w">    </span>package<span class="w">             </span>Package<span class="w"> </span>the<span class="w"> </span>map<span class="w"> </span><span class="o">(</span>tar.gz<span class="o">)</span><span class="w"> </span>the<span class="w"> </span>map
 <span class="w">    </span>un-package<span class="w">          </span>Un-Package<span class="w"> </span>the<span class="w"> </span>map<span class="w"> </span>extract<span class="w"> </span><span class="o">(</span>tar.gz<span class="o">)</span>
+<span class="w">    </span>create<span class="w">              </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>map,<span class="w"> </span>with<span class="w"> </span>some<span class="w"> </span>examples
 </pre></div>
 </div>
 </div>
@@ -144,6 +145,11 @@ options:
 <li><p>The write command will render the map with the values from the values.yaml file, and write it to
 a directory.</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>pod-porter is opinionated about the name of the file, so you only need to provide the directory
+where you want to write the file.</p>
+</div>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter write -h” output</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>write<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-n<span class="w"> </span>NAME<span class="w"> </span>-m<span class="w"> </span>MAP<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>FILE_VALUES<span class="o">]</span><span class="w"> </span>-o<span class="w"> </span>OUTPUT
@@ -155,7 +161,7 @@ options:
 <span class="w">  </span>-f<span class="w"> </span>FILE_VALUES,<span class="w"> </span>--file-values<span class="w"> </span>FILE_VALUES
 <span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>values<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>instead<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>map<span class="w"> </span>values
 <span class="w">  </span>-o<span class="w"> </span>OUTPUT,<span class="w"> </span>--output<span class="w"> </span>OUTPUT
-<span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>output<span class="w"> </span>file
+<span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>output<span class="w"> </span>file/files
 </pre></div>
 </div>
 </div>
@@ -165,6 +171,11 @@ options:
 <ul class="simple">
 <li><p>The package command will tar.gz the map in a named tar.gz.</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>pod-porter is opinionated about the name of the tar.gz, so you only need to provide the directory
+where you want to write the file.</p>
+</div>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter package -h” output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>package<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-m<span class="w"> </span>MAP<span class="w"> </span>-o<span class="w"> </span>OUTPUT
@@ -173,7 +184,7 @@ options:
 <span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
 <span class="w">  </span>-m<span class="w"> </span>MAP,<span class="w"> </span>--map<span class="w"> </span>MAP<span class="w">     </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>map
 <span class="w">  </span>-o<span class="w"> </span>OUTPUT,<span class="w"> </span>--output<span class="w"> </span>OUTPUT
-<span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>output<span class="w"> </span>file
+<span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>output<span class="w"> </span>file/files
 </pre></div>
 </div>
 </div>
@@ -191,7 +202,7 @@ options:
 <span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
 <span class="w">  </span>-m<span class="w"> </span>MAP,<span class="w"> </span>--map<span class="w"> </span>MAP<span class="w">     </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>map
 <span class="w">  </span>-o<span class="w"> </span>OUTPUT,<span class="w"> </span>--output<span class="w"> </span>OUTPUT
-<span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>output<span class="w"> </span>file
+<span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>output<span class="w"> </span>file/files
 </pre></div>
 </div>
 </div>
@@ -203,13 +214,11 @@ options:
 </ul>
 <div class="literal-block-wrapper docutils container" id="id6">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter create -h” output</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-m<span class="w"> </span>MAP<span class="w"> </span>-o<span class="w"> </span>OUTPUT
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-m<span class="w"> </span>MAP
 
 options:
-<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
-<span class="w">  </span>-m<span class="w"> </span>MAP,<span class="w"> </span>--map<span class="w"> </span>MAP<span class="w">     </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>map
-<span class="w">  </span>-o<span class="w"> </span>OUTPUT,<span class="w"> </span>--output<span class="w"> </span>OUTPUT
-<span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>output<span class="w"> </span>file/files
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">         </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>-m<span class="w"> </span>MAP,<span class="w"> </span>--map<span class="w"> </span>MAP<span class="w">  </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>map
 </pre></div>
 </div>
 </div>

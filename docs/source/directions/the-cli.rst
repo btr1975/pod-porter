@@ -11,7 +11,7 @@ pod-porter CLI Help
 .. code-block:: bash
    :caption: Example "pod-porter -h" output
 
-   usage: pod-porter [-h] {template,write,package,un-package} ...
+   usage: pod-porter [-h] {template,write,package,un-package,create} ...
 
    pod-porter version: 0.1.0
 
@@ -21,12 +21,13 @@ pod-porter CLI Help
    commands:
      Valid commands: a single command is required
 
-     {template,write,package,un-package}
+     {template,write,package,un-package,create}
                            CLI Help
        template            View the rendered compose file
        write               Write the rendered compose file
        package             Package the map (tar.gz) the map
        un-package          Un-Package the map extract (tar.gz)
+       create              Create a new map, with some examples
 
 pod-porter CLI template command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,6 +52,11 @@ pod-porter CLI write command
 * The write command will render the map with the values from the values.yaml file, and write it to
   a directory.
 
+..  warning::
+
+   pod-porter is opinionated about the name of the file, so you only need to provide the directory
+   where you want to write the file.
+
 .. code-block:: bash
    :caption: Example "pod-porter write -h" output
 
@@ -63,12 +69,17 @@ pod-porter CLI write command
      -f FILE_VALUES, --file-values FILE_VALUES
                            Path to the values you want to use instead of the map values
      -o OUTPUT, --output OUTPUT
-                           Path to output file
+                           Path to output file/files
 
 pod-porter CLI package command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * The package command will tar.gz the map in a named tar.gz.
+
+..  warning::
+
+   pod-porter is opinionated about the name of the tar.gz, so you only need to provide the directory
+   where you want to write the file.
 
 .. code-block:: bash
    :caption: Example "pod-porter package -h" output
@@ -79,7 +90,7 @@ pod-porter CLI package command
      -h, --help            show this help message and exit
      -m MAP, --map MAP     Path to the map
      -o OUTPUT, --output OUTPUT
-                           Path to output file
+                           Path to output file/files
 
 pod-porter CLI un-package command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,7 +106,7 @@ pod-porter CLI un-package command
      -h, --help            show this help message and exit
      -m MAP, --map MAP     Path to the map
      -o OUTPUT, --output OUTPUT
-                           Path to output file
+                           Path to output file/files
 
 pod-porter CLI create command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,10 +116,8 @@ pod-porter CLI create command
 .. code-block:: bash
    :caption: Example "pod-porter create -h" output
 
-   usage: pod-porter create [-h] -m MAP -o OUTPUT
-
+   usage: pod-porter create [-h] -m MAP
+   
    options:
-     -h, --help            show this help message and exit
-     -m MAP, --map MAP     Path to the map
-     -o OUTPUT, --output OUTPUT
-                           Path to output file/files
+     -h, --help         show this help message and exit
+     -m MAP, --map MAP  Path to the map
