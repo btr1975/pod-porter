@@ -1,3 +1,10 @@
+| BRANCH | STATUS |
+|---|---|
+| master | [![Unit-Testing, Coverage, Linting](https://github.com/btr1975/pod-porter/actions/workflows/test-coverage-lint.yml/badge.svg?branch=master)](https://github.com/btr1975/pod-porter/actions/workflows/test-coverage-lint.yml) |
+| develop | [![Unit-Testing, Coverage, Linting](https://github.com/btr1975/pod-porter/actions/workflows/test-coverage-lint.yml/badge.svg?branch=develop)](https://github.com/btr1975/pod-porter/actions/workflows/test-coverage-lint.yml) |
+
+[![Supported Versions](https://img.shields.io/pypi/pyversions/pod-porter.svg)](https://pypi.org/project/pod-porter)
+
 # pod-porter
 
 ## Description
