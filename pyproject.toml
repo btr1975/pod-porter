@@ -11,6 +11,14 @@ dynamic = ["version", "readme", "dependencies"]
 requires-python = ">=3.9"
 description = "Like Helm but for Container Compose Files"
 keywords = [
+    "docker",
+    "podman",
+    "compose",
+    "podman-compose",
+    "helm",
+    "docker-compose",
+    "porter",
+    "pod-porter",
 ]
 authors = [
   { name="Benjamin P. Trachtenberg", email="e_ben_75-python@yahoo.com" },
