@@ -5,6 +5,8 @@
 
 [![Supported Versions](https://img.shields.io/pypi/pyversions/pod-porter.svg)](https://pypi.org/project/pod-porter)
 
+[![Docs](https://readthedocs.org/projects/pod-porter/badge/?version=latest)](https://pod-porter.readthedocs.io/en/latest/)
+
 # pod-porter
 
 ## Description
