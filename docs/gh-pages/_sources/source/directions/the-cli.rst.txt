@@ -3,6 +3,10 @@ pod-porter CLI
 
 * The pod-porter cli works like any other Unix/Linux command line tool.
 
+pod-porter CLI Help
+~~~~~~~~~~~~~~~~~~~~~
+
+* This is just help for the CLI, it will show you the commands you can run.
 
 .. code-block:: bash
    :caption: Example "pod-porter -h" output
@@ -24,6 +28,10 @@ pod-porter CLI
        package             Package the map (tar.gz) the map
        un-package          Un-Package the map extract (tar.gz)
 
+pod-porter CLI template command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* The template command will render the map with the values from the values.yaml file.
 
 .. code-block:: bash
    :caption: Example "pod-porter template -h" output
@@ -36,6 +44,12 @@ pod-porter CLI
      -m MAP, --map MAP     Path to the map
      -f FILE_VALUES, --file-values FILE_VALUES
                            Path to the values you want to use instead of the map values
+
+pod-porter CLI write command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* The write command will render the map with the values from the values.yaml file, and write it to
+  a directory.
 
 .. code-block:: bash
    :caption: Example "pod-porter write -h" output
@@ -51,6 +65,11 @@ pod-porter CLI
      -o OUTPUT, --output OUTPUT
                            Path to output file
 
+pod-porter CLI package command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* The package command will tar.gz the map in a named tar.gz.
+
 .. code-block:: bash
    :caption: Example "pod-porter package -h" output
 
@@ -62,6 +81,11 @@ pod-porter CLI
      -o OUTPUT, --output OUTPUT
                            Path to output file
 
+pod-porter CLI un-package command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* The un-package command will extract the tar.gz the map in a named tar.gz.
+
 .. code-block:: bash
    :caption: Example "pod-porter un-package -h" output
 
@@ -72,3 +96,19 @@ pod-porter CLI
      -m MAP, --map MAP     Path to the map
      -o OUTPUT, --output OUTPUT
                            Path to output file
+
+pod-porter CLI create command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* The create command will create a new map with some examples.
+
+.. code-block:: bash
+   :caption: Example "pod-porter create -h" output
+
+   usage: pod-porter create [-h] -m MAP -o OUTPUT
+
+   options:
+     -h, --help            show this help message and exit
+     -m MAP, --map MAP     Path to the map
+     -o OUTPUT, --output OUTPUT
+                           Path to output file/files

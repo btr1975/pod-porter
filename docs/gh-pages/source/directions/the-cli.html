@@ -49,7 +49,15 @@
 <li class="toctree-l2"><a class="reference internal" href="maps.html">pod-porter Maps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="values.html">pod-porter Values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="templates.html">pod-porter Templates</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">pod-porter CLI</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pod-porter CLI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-help">pod-porter CLI Help</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-template-command">pod-porter CLI template command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-write-command">pod-porter CLI write command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-package-command">pod-porter CLI package command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-un-package-command">pod-porter CLI un-package command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-create-command">pod-porter CLI create command</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -84,6 +92,11 @@
 <ul class="simple">
 <li><p>The pod-porter cli works like any other Unix/Linux command line tool.</p></li>
 </ul>
+<section id="pod-porter-cli-help">
+<h2>pod-porter CLI Help<a class="headerlink" href="#pod-porter-cli-help" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>This is just help for the CLI, it will show you the commands you can run.</p></li>
+</ul>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter -h” output</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">{</span>template,write,package,un-package<span class="o">}</span><span class="w"> </span>...
@@ -105,6 +118,12 @@ commands:
 </pre></div>
 </div>
 </div>
+</section>
+<section id="pod-porter-cli-template-command">
+<h2>pod-porter CLI template command<a class="headerlink" href="#pod-porter-cli-template-command" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The template command will render the map with the values from the values.yaml file.</p></li>
+</ul>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter template -h” output</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>template<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-n<span class="w"> </span>NAME<span class="w"> </span>-m<span class="w"> </span>MAP<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>FILE_VALUES<span class="o">]</span>
@@ -118,6 +137,13 @@ options:
 </pre></div>
 </div>
 </div>
+</section>
+<section id="pod-porter-cli-write-command">
+<h2>pod-porter CLI write command<a class="headerlink" href="#pod-porter-cli-write-command" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The write command will render the map with the values from the values.yaml file, and write it to
+a directory.</p></li>
+</ul>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter write -h” output</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>write<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-n<span class="w"> </span>NAME<span class="w"> </span>-m<span class="w"> </span>MAP<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>FILE_VALUES<span class="o">]</span><span class="w"> </span>-o<span class="w"> </span>OUTPUT
@@ -133,6 +159,12 @@ options:
 </pre></div>
 </div>
 </div>
+</section>
+<section id="pod-porter-cli-package-command">
+<h2>pod-porter CLI package command<a class="headerlink" href="#pod-porter-cli-package-command" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The package command will tar.gz the map in a named tar.gz.</p></li>
+</ul>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter package -h” output</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>package<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-m<span class="w"> </span>MAP<span class="w"> </span>-o<span class="w"> </span>OUTPUT
@@ -145,6 +177,12 @@ options:
 </pre></div>
 </div>
 </div>
+</section>
+<section id="pod-porter-cli-un-package-command">
+<h2>pod-porter CLI un-package command<a class="headerlink" href="#pod-porter-cli-un-package-command" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The un-package command will extract the tar.gz the map in a named tar.gz.</p></li>
+</ul>
 <div class="literal-block-wrapper docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter un-package -h” output</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>un-package<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-m<span class="w"> </span>MAP<span class="w"> </span>-o<span class="w"> </span>OUTPUT
@@ -157,6 +195,25 @@ options:
 </pre></div>
 </div>
 </div>
+</section>
+<section id="pod-porter-cli-create-command">
+<h2>pod-porter CLI create command<a class="headerlink" href="#pod-porter-cli-create-command" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The create command will create a new map with some examples.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Example “pod-porter create -h” output</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-m<span class="w"> </span>MAP<span class="w"> </span>-o<span class="w"> </span>OUTPUT
+
+options:
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>-m<span class="w"> </span>MAP,<span class="w"> </span>--map<span class="w"> </span>MAP<span class="w">     </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>map
+<span class="w">  </span>-o<span class="w"> </span>OUTPUT,<span class="w"> </span>--output<span class="w"> </span>OUTPUT
+<span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>output<span class="w"> </span>file/files
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 
 

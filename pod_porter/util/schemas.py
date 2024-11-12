@@ -143,4 +143,4 @@ class MapSchema(_BaseSchema):
         self.validate_string_no_spaces("name", self.name)
         self.validate_string_no_spaces_begin_end("description", self.description)
         self.validate_semantic_version("version", self.version)
-        self.validate_semantic_version("app_version", self.app_version)
+        self.validate_string_no_spaces("app_version", self.app_version)

@@ -54,7 +54,7 @@ include = [
 
 # Add or remove file extensions to include the data
 [tool.setuptools.package-data]
-"*" = ["*.j2", "*.yaml"]
+"*" = ["*.j2"]
 
 [tool.setuptools]
 zip-safe = false

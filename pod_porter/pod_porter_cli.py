@@ -3,10 +3,8 @@ CLI for pod_porter
 """
 
 from argparse import ArgumentParser
-import shutil
-import os
 from pod_porter.pod_porter import PorterMapsRunner
-from pod_porter.util.file_read_write import write_file, create_tar_gz_file, extract_tar_gz_file
+from pod_porter.util.file_read_write import write_file, create_tar_gz_file, extract_tar_gz_file, create_new_map
 from pod_porter.version import __version__ as pod_porter_version
 
 
@@ -51,7 +49,7 @@ def common_sub_parser_output_path(sub_arg_parser: ArgumentParser) -> None:
     :rtype: None
     :returns: Nothing it appends the arguments to the sub parser
     """
-    sub_arg_parser.add_argument("-o", "--output", required=True, help="Path to output file")
+    sub_arg_parser.add_argument("-o", "--output", required=True, help="Path to output file/files")
 
 
 def cli_argument_parser() -> ArgumentParser:
@@ -93,21 +91,19 @@ def cli_argument_parser() -> ArgumentParser:
     common_sub_parser_output_path(sub_arg_parser=arg_parser_map_unpackage)
 
     # This is the sub parser to create a new map
-    # arg_parser_map_create = subparsers.add_parser("create", help="Create a new map, with some examples")
-    # arg_parser_map_create.set_defaults(which_sub="create")
-    # common_sub_parser_map_arguments(sub_arg_parser=arg_parser_map_create)
+    arg_parser_map_create = subparsers.add_parser("create", help="Create a new map, with some examples")
+    arg_parser_map_create.set_defaults(which_sub="create")
+    common_sub_parser_map_arguments(sub_arg_parser=arg_parser_map_create)
 
     return arg_parser
 
 
 def cli() -> None:  # pragma: no cover
     """Function to run the command line
+
     :rtype: None
     :returns: Nothing it is the CLI
     """
-    base_directory = os.path.dirname(os.path.abspath(__file__))
-    new_project_path = os.path.join(base_directory, "new_project", "thing")
-
     arg_parser = None
 
     try:
@@ -136,7 +132,7 @@ def cli() -> None:  # pragma: no cover
             extract_tar_gz_file(path=args.map, output_path=args.output)
 
         if args.which_sub == "create":
-            shutil.copy(src=new_project_path, dst=args.map, follow_symlinks=False)
+            create_new_map(map_name_and_path=args.map)
 
     except AttributeError as error:
         print(f"\n !!! {error} !!! \n")

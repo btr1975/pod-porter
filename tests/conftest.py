@@ -133,7 +133,7 @@ def map_data_bad_app_version() -> dict:
         "name": "mongo",
         "description": "MongoDB map",
         "version": "1.0.0",
-        "app_version": "4.bad.0",
+        "app_version": "4.bad.0 f f",
     }
 
     return data

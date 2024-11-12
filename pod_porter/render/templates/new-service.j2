@@ -1,0 +1,16 @@
+---
+services:
+  {{ data.map_name }}:
+{%- raw %}
+    image: "{{ values.image.repository }}:{{ values.image.tag }}"
+{% endraw %}
+    container_name: "{%- raw %}{{ release.name }}{% endraw %}-{{ data.map_name }}"
+    ports:
+{%- raw %}
+      {% for port in values.service %}
+      - "{{ port.node_port }}:{{ port.container_port }}"
+      {% endfor %}
+{% endraw %}
+    volumes:
+      - "{{ data.map_name }}-data-compose:/data"
+
