@@ -1,0 +1,5 @@
+---
+volumes:
+  {% for volume in values.volumes.mongo %}
+  {{ volume.name }}:
+  {% endfor %}

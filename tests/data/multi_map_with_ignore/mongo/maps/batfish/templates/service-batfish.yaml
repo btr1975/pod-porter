@@ -1,0 +1,12 @@
+---
+services:
+  batfish:
+    image: "{{ values.image.batfish.repository }}:{{ values.image.batfish.tag }}"
+    hostname: "{{ release.name }}-batfish"
+    container_name: "{{ release.name }}-batfish"
+    ports:
+      {% for port in values.service.batfish %}
+      - "{{ port.node_port }}:{{ port.container_port }}"
+      {% endfor %}
+    volumes:
+      - "batfish-data-compose:/data"
