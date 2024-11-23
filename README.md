@@ -7,6 +7,8 @@
 
 [![Docs](https://readthedocs.org/projects/pod-porter/badge/?version=latest)](https://pod-porter.readthedocs.io/en/latest/)
 
+![PyPI Downloads](https://static.pepy.tech/badge/pod-porter)
+
 # pod-porter
 
 ## Description
@@ -22,7 +24,7 @@
 ```text
 
 map-name
-    ├── map.yaml
+    ├── Map.yaml
     ├── values.yaml
     ├── templates
 
