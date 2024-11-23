@@ -154,6 +154,10 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         services = {compose_type: {}}
         for template in self._templates_pre_render:
             template_dict = self.get_yaml_data(template)
+
+            if not template_dict:
+                continue
+
             if template_dict.get(compose_type):
                 services.get(compose_type).update(template_dict[compose_type])
 
