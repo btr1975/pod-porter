@@ -7,7 +7,7 @@ import os
 from yaml import safe_load, safe_dump
 from pod_porter.render.render import Render
 from pod_porter.util.directories import create_temp_working_directory, delete_temp_working_directory
-from pod_porter.util.file_read_write import write_file
+from pod_porter.util.file_read_write import write_file, extract_tar_gz_file
 from pod_porter.util.schemas import MapSchema
 
 
@@ -328,6 +328,15 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
 
         if os.path.isdir(os.path.join(self._path, "maps")):
             for single_map in os.listdir(os.path.join(self._path, "maps")):
+                if single_map.endswith(".tar.gz"):
+                    tar_path = os.path.join(self._path, "maps", single_map)
+                    extract_path = os.path.join(self._path, "maps")
+                    extract_tar_gz_file(path=tar_path, output_path=extract_path)
+
+            for single_map in os.listdir(os.path.join(self._path, "maps")):
+                if single_map.endswith(".tar.gz"):
+                    continue
+
                 maps.append(
                     _PorterMap(path=os.path.join(self._path, "maps", single_map), release_name=self._release_name)
                 )
