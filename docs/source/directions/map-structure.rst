@@ -2,7 +2,7 @@ pod-porter Map Structure
 `````````````````````````````````````````````
 
 * This is the basic structure of a pod-porter map.  This is what I expect most people will use.
-  It is very similar to a HELM_ chart.
+  It is very similar to a HELM_ chart.  It is a top level map with no sub maps.
 
 
 .. code-block:: bash
@@ -17,13 +17,16 @@ pod-porter Map Structure
      |-> values.yaml
 
 * This is the multi map structure of a pod-porter map.  Yes you can have child maps.
-  Again it is very similar to a HELM_ chart.
+  Again it is very similar to a HELM_ chart. This map has 2 sub maps. One called map-name-2 which is not packaged,
+  and one packaged map called map-name-0.1.0.tar.gz.  A packaged map will be unpacked and the contents will be
+  placed in the maps directory.
 
 .. code-block:: bash
    :caption: Multi Map Structure
 
    map-name
      |-> maps
+     |      |-> map-name-0.1.0.tar.gz
      |      |-> map-name-2
      |              |-> templates
      |              |      |-> template1.yaml

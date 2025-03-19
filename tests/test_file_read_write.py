@@ -18,6 +18,7 @@ create_tar_gz_file_table = [
     ("multi_map_with_ignore_path"),
 ]
 
+
 @pytest.mark.parametrize("map_type", create_tar_gz_file_table)
 def test_create_tar_gz_file(tmp_path, map_type, request):
     the_temp_path_path = str(tmp_path)

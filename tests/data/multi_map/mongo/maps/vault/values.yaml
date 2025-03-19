@@ -1,0 +1,26 @@
+---
+# This is example values file for the template
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: "docker.io/library/vault"
+  tag: "1.13.3"
+
+service:
+  - node_port: 8200
+    container_port: 8200
+    name: "vault"
+
+environment_variables:
+  vault_dev_root_token_id: "changeme"
+
+# Set options.vault_init to true the first time you bring up the vault service, set to false after that
+# This will initialize the vault with your root token, MAKE SURE YOU SAVE THE UNSEAL TOKEN AND ROOT TOKEN
+# If you lose the root token you will have to reset the vault container, and you will lose all your data
+# it is required by vault to unseal the vault if you bring the container down, and bring it back up!
+#
+# Depending on your system you may need to disable mlock, if you are running on a system that does not support mlock
+options:
+  vault_init: true
+  vault_mlock: true
