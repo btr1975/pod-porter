@@ -80,6 +80,11 @@ def other_values_file(base_data_path) -> str:
 
 
 @pytest.fixture
+def other_values_file_with_global(base_data_path) -> str:
+    return os.path.join(base_data_path, "other-values-files", "other-with-global.yaml")
+
+
+@pytest.fixture
 def other_values_none(base_data_path) -> None:
     return None
 

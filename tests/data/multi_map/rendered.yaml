@@ -37,7 +37,25 @@ services:
     image: docker.io/library/mongo-express:latest
     ports:
     - 8181:8081
+  vault-thing:
+    cap_add:
+    - IPC_LOCK
+    container_name: vault-thing
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: changeme
+      VAULT_LOCAL_CONFIG: '{"storage": {"file": {"path": "/vault/file"}}, "default_lease_ttl":
+        "168h", "max_lease_ttl": "720h", "ui": true, "cluster_addr": "http://0.0.0.0:8201",
+        "api_addr": "http://0.0.0.0:8200"}'
+    hostname: vault-thing
+    image: docker.io/library/vault:1.13.3
+    ports:
+    - 8200:8200
+    volumes:
+    - vault-logs-thing:/vault/logs
+    - vault-file-thing:/vault/file
 volumes:
   batfish-data-compose: null
   mongo-data-configdb-compose: null
   mongo-data-db-compose: null
+  vault-file-thing: null
+  vault-logs-thing: null

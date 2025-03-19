@@ -1,0 +1,50 @@
+---
+global:
+  batfish:
+    image:
+      batfish:
+        repository: "docker.io/batfish/allinone"
+        tag: "latest"
+    service:
+      batfish:
+        - node_port: 8888
+          container_port: 8888
+        - node_port: 9997
+          container_port: 9997
+        - node_port: 9996
+          container_port: 9996
+
+image:
+  mongo:
+    repository: "docker.io/library/mongo"
+    tag: "latest"
+  mongo_express:
+    repository: "docker.io/library/mongo-express"
+    tag: "latest"
+
+service:
+  mongo:
+    node_port: 27017
+    container_port: 27017
+  mongo_express:
+    node_port: 8181
+    container_port: 8081
+
+volumes:
+  mongo:
+    - name: "mongo-data-db-compose"
+      value: "/data/db"
+    - name: "mongo-data-configdb-compose"
+      value: "/data/configdb"
+
+environment:
+  mongo:
+    - name: "MONGO_INITDB_ROOT_USERNAME"
+      value: "root"
+    - name: "MONGO_INITDB_ROOT_PASSWORD"
+      value: "example"
+  mongo_express:
+    - name: "ME_CONFIG_MONGODB_ADMINUSERNAME"
+      value: "root"
+    - name: "ME_CONFIG_MONGODB_ADMINPASSWORD"
+      value: "example"

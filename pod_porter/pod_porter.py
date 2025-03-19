@@ -2,7 +2,7 @@
 Pod Porter Main Application
 """
 
-from typing import List, Optional
+from typing import List, Optional, Dict
 import os
 from yaml import safe_load, safe_dump
 from pod_porter.render.render import Render
@@ -20,14 +20,24 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
     :param release_name: The name of the release
     :type values_override: values_override: Optional[str] = None
     :param values_override: The path to the yaml to override with
+    :type top_level: bool = True
+    :param top_level: If the map is a top level map
 
     :rtype: None
     :returns: Nothing
     """
 
-    def __init__(self, path: str, release_name: Optional[str] = None, values_override: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        path: str,
+        release_name: Optional[str] = None,
+        values_override: Optional[str] = None,
+        top_level: bool = True,
+    ) -> None:
+        self._name = os.path.basename(path)
+        self._top_level = top_level
         self._temp_working_directory = create_temp_working_directory()
-        self._path = path
+        self._path = os.path.abspath(path)
         self._release_name = release_name or "release-name"
         self._map_data = self._get_map()
         self._values_data = self._get_values(values_override=values_override)
@@ -251,7 +261,23 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         if not os.path.isfile(values_path):
             raise FileNotFoundError(f"values file '{values_path}' not found")
 
-        return {"values": self.get_yaml_data(values_path), "release": {"name": self._release_name}}
+        initial_values = self.get_yaml_data(values_path)
+
+        if self._top_level:
+            values = initial_values
+
+        elif not self._top_level and not initial_values.get("global"):
+            values_path = os.path.join(self._path, "values.yaml")
+            values = self.get_yaml_data(values_path)
+
+        elif not self._top_level and not initial_values.get("global").get(self._name):
+            values_path = os.path.join(self._path, "values.yaml")
+            values = self.get_yaml_data(values_path)
+
+        else:
+            values = self.get_yaml_data(values_path).get("global").get(self._name)
+
+        return {"values": values, "release": {"name": self._release_name}}
 
     def _pre_render(self) -> None:
         """Pre-render the templates from the map
@@ -285,7 +311,12 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
     def __init__(self, path: str, release_name: Optional[str] = None, values_override: Optional[str] = None) -> None:
         self._path = path
         self._release_name = release_name or "release-name"
-        self._values_override = values_override
+        if values_override:
+            self._values_override = os.path.abspath(values_override)
+
+        else:
+            self._values_override = None
+
         self._toplevel_map_data = None
         self._all_maps = self._collect_maps()
         self._services = {"services": {}}
@@ -312,10 +343,10 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
         """
         return self._toplevel_map_data
 
-    def _collect_maps(self) -> List[_PorterMap]:
+    def _collect_maps(self) -> List[Dict]:
         """Collect all the maps in the directory
 
-        :rtype: List[_PorterMap]
+        :rtype: List[Dict]
         :returns: A list of PorterMap objects
         """
         top_level_map = _PorterMap(
@@ -324,7 +355,7 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
 
         self._toplevel_map_data = top_level_map.get_map_data()
 
-        maps = [top_level_map]
+        maps = [{"map_obj": top_level_map, "map_name": os.path.basename(self._path)}]
 
         if os.path.isdir(os.path.join(self._path, "maps")):
             for single_map in os.listdir(os.path.join(self._path, "maps")):
@@ -338,7 +369,15 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
                     continue
 
                 maps.append(
-                    _PorterMap(path=os.path.join(self._path, "maps", single_map), release_name=self._release_name)
+                    {
+                        "map_obj": _PorterMap(
+                            path=os.path.join(self._path, "maps", single_map),
+                            release_name=self._release_name,
+                            values_override=self._values_override,
+                            top_level=False,
+                        ),
+                        "map_name": single_map,
+                    }
                 )
 
         return maps
@@ -361,12 +400,12 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
         :returns: Nothing
         """
         for single_map in self._all_maps:
-            self._services["services"].update(single_map.get_services().get("services"))
-            self._configs["configs"].update(single_map.get_configs().get("configs"))
-            self._volumes["volumes"].update(single_map.get_volumes().get("volumes"))
-            self._secrets["secrets"].update(single_map.get_secrets().get("secrets"))
-            self._networks["networks"].update(single_map.get_networks().get("networks"))
-            delete_temp_working_directory(single_map.get_temp_working_directory())
+            self._services["services"].update(single_map.get("map_obj").get_services().get("services"))
+            self._configs["configs"].update(single_map.get("map_obj").get_configs().get("configs"))
+            self._volumes["volumes"].update(single_map.get("map_obj").get_volumes().get("volumes"))
+            self._secrets["secrets"].update(single_map.get("map_obj").get_secrets().get("secrets"))
+            self._networks["networks"].update(single_map.get("map_obj").get_networks().get("networks"))
+            delete_temp_working_directory(single_map.get("map_obj").get_temp_working_directory())
         self._compose.update(self._services)
         self._compose.update(self._configs)
         self._compose.update(self._volumes)
