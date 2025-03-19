@@ -266,16 +266,16 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         if self._top_level:
             values = initial_values
 
-        elif not self._top_level and not initial_values.get("global"):
+        elif not self._top_level and not initial_values.get("sub_map_values"):
             values_path = os.path.join(self._path, "values.yaml")
             values = self.get_yaml_data(values_path)
 
-        elif not self._top_level and not initial_values.get("global").get(self._name):
+        elif not self._top_level and not initial_values.get("sub_map_values").get(self._name):
             values_path = os.path.join(self._path, "values.yaml")
             values = self.get_yaml_data(values_path)
 
         else:
-            values = self.get_yaml_data(values_path).get("global").get(self._name)
+            values = self.get_yaml_data(values_path).get("sub_map_values").get(self._name)
 
         return {"values": values, "release": {"name": self._release_name}}
 
