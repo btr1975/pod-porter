@@ -5,6 +5,7 @@ Pod Porter Main Application
 from typing import List, Optional, Dict
 import os
 from yaml import safe_load, safe_dump
+from jsonschema import validate, Draft202012Validator
 from pod_porter.render.render import Render
 from pod_porter.util.directories import create_temp_working_directory, delete_temp_working_directory
 from pod_porter.util.file_read_write import write_file, extract_tar_gz_file
@@ -26,6 +27,8 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
     :rtype: None
     :returns: Nothing
     """
+
+    JSON_SCHEMA_FORMAT_CHECKERS = Draft202012Validator.FORMAT_CHECKER
 
     def __init__(
         self,
@@ -62,6 +65,19 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         :returns: The string representation of the object
         """
         return f'PorterMap(path="{self._path}", release_name="{self._release_name}")'
+
+    def validate_json_schema(self, values_data: dict, json_schema: dict) -> None:
+        """Validate data against a JSON schema.
+
+        :type values_data: dict
+        :param values_data: The values data to validate
+        :type json_schema: dict
+        :param json_schema: The JSON schema to validate against
+
+        :rtype: None
+        :returns: Nothing it validates the JSON data against the JSON schema
+        """
+        validate(instance=values_data, schema=json_schema, format_checker=self.JSON_SCHEMA_FORMAT_CHECKERS)
 
     def get_services(self) -> dict:
         """Get the services data
