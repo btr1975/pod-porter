@@ -18,29 +18,29 @@ pod\_porter.pod\_porter module
 
 .. automodule:: pod_porter.pod_porter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 pod\_porter.pod\_porter\_cli module
 -----------------------------------
 
 .. automodule:: pod_porter.pod_porter_cli
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 pod\_porter.version module
 --------------------------
 
 .. automodule:: pod_porter.version
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: pod_porter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

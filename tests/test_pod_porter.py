@@ -8,6 +8,7 @@ porter_map_runner_table = [
     ("multi_map_path", "multi_map_rendered_path", "other_values_none"),
     ("multi_map_path", "multi_map_rendered_path", "other_values_file_with_global"),
     ("multi_map_with_ignore_path", "multi_map_with_ignore_rendered_path", "other_values_none"),
+    ("single_single_map_with_validation_path", "single_single_map_with_validation_rendered_path", "other_values_none"),
 ]
 
 

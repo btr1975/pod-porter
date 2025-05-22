@@ -2,7 +2,7 @@ pod-porter Templates
 `````````````````````````````````````````````
 
 pod-porter uses Jinja2_ templates to render the compose files.  The templates are stored in the `templates`
-directory in the map.  The templates are rendered using the values from the `values.yaml` file.
+directory in the map.  The templates are rendered using the values from the ``values.yaml`` file.
 
 .. literalinclude:: ./examples/structure/multi_map/mongo/templates/service-mongo.yaml
    :language: jinja
@@ -29,7 +29,7 @@ directory in the map.  The templates are rendered using the values from the `val
    :language: jinja
    :caption: Example template for Batfish volumes
 
-Using these templates and the values from the `values.yaml` file, pod-porter will render the compose files.
+Using these templates and the values from the ``values.yaml`` file, pod-porter will render the compose files.
 
 .. code-block:: bash
 

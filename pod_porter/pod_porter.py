@@ -3,8 +3,10 @@ Pod Porter Main Application
 """
 
 from typing import List, Optional, Dict
+import json
 import os
 from yaml import safe_load, safe_dump
+from jsonschema import validate, Draft202012Validator
 from pod_porter.render.render import Render
 from pod_porter.util.directories import create_temp_working_directory, delete_temp_working_directory
 from pod_porter.util.file_read_write import write_file, extract_tar_gz_file
@@ -22,20 +24,26 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
     :param values_override: The path to the yaml to override with
     :type top_level: bool = True
     :param top_level: If the map is a top level map
+    :type top_level_path: Optional[str] = None
+    :param top_level_path: The path to the top level map
 
     :rtype: None
     :returns: Nothing
     """
 
-    def __init__(
+    JSON_SCHEMA_FORMAT_CHECKERS = Draft202012Validator.FORMAT_CHECKER
+
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
         path: str,
         release_name: Optional[str] = None,
         values_override: Optional[str] = None,
         top_level: bool = True,
+        top_level_path: Optional[str] = None,
     ) -> None:
         self._name = os.path.basename(path)
         self._top_level = top_level
+        self._top_level_path = os.path.abspath(top_level_path)
         self._temp_working_directory = create_temp_working_directory()
         self._path = os.path.abspath(path)
         self._release_name = release_name or "release-name"
@@ -62,6 +70,27 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         :returns: The string representation of the object
         """
         return f'PorterMap(path="{self._path}", release_name="{self._release_name}")'
+
+    def validate_json_schema(self, values_data: dict, values_path: str) -> None:
+        """Validate data against a JSON schema.
+
+        :type values_data: dict
+        :param values_data: The values data to validate
+        :type values_path: str
+        :param values_path: The path to the values file
+
+        :rtype: None
+        :returns: Nothing it validates the JSON data against the JSON schema
+        """
+        json_schema_path = os.path.join(os.path.split(values_path)[0], "values-schema.json")
+
+        if not os.path.isfile(json_schema_path):
+            return
+
+        with open(json_schema_path, "r", encoding="utf-8") as json_schema_file:
+            json_schema = json.load(json_schema_file)
+
+        validate(instance=values_data, schema=json_schema, format_checker=self.JSON_SCHEMA_FORMAT_CHECKERS)
 
     def get_services(self) -> dict:
         """Get the services data
@@ -253,7 +282,7 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         :returns: The data from the values.yaml
         """
         if not values_override:
-            values_path = os.path.join(self._path, "values.yaml")
+            values_path = os.path.join(self._top_level_path, "values.yaml")
 
         else:
             values_path = values_override
@@ -265,14 +294,17 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
 
         if self._top_level:
             values = initial_values
+            self.validate_json_schema(values_data=values, values_path=values_path)
 
         elif not self._top_level and not initial_values.get("sub_map_values"):
             values_path = os.path.join(self._path, "values.yaml")
             values = self.get_yaml_data(values_path)
+            self.validate_json_schema(values_data=values, values_path=values_path)
 
         elif not self._top_level and not initial_values.get("sub_map_values").get(self._name):
             values_path = os.path.join(self._path, "values.yaml")
             values = self.get_yaml_data(values_path)
+            self.validate_json_schema(values_data=values, values_path=values_path)
 
         else:
             values = self.get_yaml_data(values_path).get("sub_map_values").get(self._name)
@@ -350,7 +382,10 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
         :returns: A list of PorterMap objects
         """
         top_level_map = _PorterMap(
-            path=self._path, release_name=self._release_name, values_override=self._values_override
+            path=self._path,
+            release_name=self._release_name,
+            values_override=self._values_override,
+            top_level_path=self._path,
         )
 
         self._toplevel_map_data = top_level_map.get_map_data()
@@ -375,6 +410,7 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
                             release_name=self._release_name,
                             values_override=self._values_override,
                             top_level=False,
+                            top_level_path=self._path,
                         ),
                         "map_name": single_map,
                     }

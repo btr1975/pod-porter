@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pod-porter"
 dynamic = ["version", "readme"]
-requires-python = ">=3.9"
+requires-python = ">=3.9,<3.14"
 description = "Like Helm but for Container Compose Files"
 keywords = [
     "docker",
@@ -49,6 +49,7 @@ classifiers = [
 
 dependencies = [
     "jinja2~=3.1.4",
+    "jsonschema[format-nongpl]>=4.23.0",
     "pyyaml~=6.0.2",
 ]
 

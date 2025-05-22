@@ -35,6 +35,16 @@ def single_map_rendered_path(base_data_path) -> str:
 
 
 @pytest.fixture
+def single_single_map_with_validation_path(base_data_path) -> str:
+    return os.path.join(base_data_path, "single_map_with_validation", "mongo")
+
+
+@pytest.fixture
+def single_single_map_with_validation_rendered_path(base_data_path) -> str:
+    return os.path.join(base_data_path, "single_map_with_validation", "rendered.yaml")
+
+
+@pytest.fixture
 def single_map_rendered_path_other_values(base_data_path) -> str:
     return os.path.join(base_data_path, "other-values-files", "rendered.yaml")
 

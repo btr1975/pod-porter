@@ -2,7 +2,7 @@ pod-porter Maps
 `````````````````````````````````````````````
 
 Just like in HELM_ the "Helmsman" uses "Charts", in pod-porter a "Porter" uses "Maps". A map is a required file.
-Also it's structure is required.  The file **MUST** be named `Map.yaml` and **MUST** be located in the root of the
+Also it's structure is required.  The file **MUST** be named ``Map.yaml`` and **MUST** be located in the root of the
 of the map.
 
 

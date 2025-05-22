@@ -134,4 +134,5 @@ rst_epilog = """
 .. _`Podman`: https://podman.io/
 .. _`Docker`: https://docker.com
 .. _Jinja2: https://jinja.palletsprojects.com/en/stable/
+.. _`JSON Schema Docs`: https://json-schema.org/docs
 """
