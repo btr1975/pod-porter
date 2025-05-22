@@ -22,7 +22,8 @@ pod-porter Values Schema Validation
 `````````````````````````````````````````````
 
 Just like in HELM_ the ``values.yaml`` can use JSON schema validation.  Just create a file called ``values-schema.json``
-in the root of the map where the ``values.yaml`` file is located.  The schema will be used to validate the ``values.yaml`` file.
+in the root of the map where the ``values.yaml`` file is located.  The schema will be used to validate the
+``values.yaml`` file.  You can reference how to create a JSON schema here `JSON Schema Docs`_.
 
 .. literalinclude:: ./examples/values-schema-validation/values.yaml
    :language: yaml
