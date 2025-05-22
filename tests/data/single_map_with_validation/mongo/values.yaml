@@ -1,0 +1,33 @@
+---
+# This is example values file for the template
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  mongo:
+    repository: "docker.io/library/mongo"
+    tag: "8.0.3"
+  mongo_express:
+    repository: "docker.io/library/mongo-express"
+    tag: "1.0.2"
+
+service:
+  mongo:
+  - node_port: 27017
+    container_port: 27017
+    name: "mongo-db"
+  mongo_express:
+  - node_port: 8181
+    container_port: 8081
+    name: "mongo-express"
+
+
+environment_variables:
+  mongo_db_root_username: "root"
+  mongo_db_root_password: "example"
+  mongo_express_admin_username: "root"
+  mongo_express_admin_password: "example"
+
+# Enable or disable mongo-express service
+options:
+  mongo_express_enable: false
