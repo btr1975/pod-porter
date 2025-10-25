@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.9, <3.14"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -677,6 +677,7 @@ wheels = [
 
 [[package]]
 name = "pod-porter"
+version = "0.2.3"
 source = { editable = "." }
 dependencies = [
     { name = "jinja2" },
@@ -697,7 +698,7 @@ dev = [
     { name = "sphinx", version = "8.2.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "sphinx-rtd-theme" },
     { name = "sphinxcontrib-mermaid" },
-    { name = "tomli" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
 [package.metadata]
@@ -717,7 +718,7 @@ dev = [
     { name = "sphinx", specifier = ">=7.4.7" },
     { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
     { name = "sphinxcontrib-mermaid", specifier = ">=1.0.0" },
-    { name = "tomli", specifier = ">=2.2.1" },
+    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.2.1" },
 ]
 
 [[package]]

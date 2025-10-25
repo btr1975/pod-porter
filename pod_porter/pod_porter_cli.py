@@ -3,9 +3,9 @@ CLI for pod_porter
 """
 
 from argparse import ArgumentParser
+from importlib.metadata import version
 from pod_porter.pod_porter import PorterMapsRunner
 from pod_porter.util.file_read_write import write_file, create_tar_gz_file, extract_tar_gz_file, create_new_map
-from pod_porter.version import __version__ as pod_porter_version
 
 
 def common_sub_parser_map_arguments(sub_arg_parser: ArgumentParser) -> None:
@@ -58,7 +58,7 @@ def cli_argument_parser() -> ArgumentParser:
     :rtype: ArgumentParser
     :returns: The argument parser
     """
-    arg_parser = ArgumentParser(description=f"pod-porter version: {pod_porter_version}")
+    arg_parser = ArgumentParser(description=f"pod-porter version: {version('pod-porter')}")
     subparsers = arg_parser.add_subparsers(
         title="commands",
         description="Valid commands: a single command is required",
