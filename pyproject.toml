@@ -7,7 +7,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pod-porter"
-dynamic = ["version", "readme"]
+dynamic = ["readme"]
+version = "0.2.3"
 requires-python = ">=3.9,<3.14"
 description = "Like Helm but for Container Compose Files"
 keywords = [
@@ -63,7 +64,7 @@ dev = [
     "sphinx>=7.4.7",
     "sphinx-rtd-theme>=3.0.2",
     "sphinxcontrib-mermaid>=1.0.0",
-    "tomli>=2.2.1",
+    "tomli>=2.2.1; python_version < '3.11'",
 ]
 
 [project.urls]
@@ -89,7 +90,6 @@ include = [
 zip-safe = false
 
 [tool.setuptools.dynamic]
-version = {attr = "pod_porter.version.__version__"}
 readme = {file = "README.md", content-type = "text/markdown"}
 
 [tool.pytest.ini_options]
