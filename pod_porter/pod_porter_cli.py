@@ -58,7 +58,7 @@ def cli_argument_parser() -> ArgumentParser:
     :rtype: ArgumentParser
     :returns: The argument parser
     """
-    arg_parser = ArgumentParser(description=f"pod-porter version: {version("pod-porter")}")
+    arg_parser = ArgumentParser(description=f"pod-porter version: {version('pod-porter')}")
     subparsers = arg_parser.add_subparsers(
         title="commands",
         description="Valid commands: a single command is required",
