@@ -3,14 +3,42 @@ Pod Porter Main Application
 """
 
 from typing import List, Optional, Dict
+from pathlib import Path
 import json
 import os
 from yaml import safe_load, safe_dump
-from jsonschema import validate, Draft202012Validator
+from jsonschema import validate, Draft202012Validator, ValidationError
 from pod_porter.render.render import Render
 from pod_porter.util.directories import create_temp_working_directory, delete_temp_working_directory
 from pod_porter.util.file_read_write import write_file, extract_tar_gz_file
 from pod_porter.util.schemas import MapSchema
+
+JSON_SCHEMA_FORMAT_CHECKERS = Draft202012Validator.FORMAT_CHECKER
+COMPOSE_SPEC: Path = Path(__file__).parent.joinpath("render").joinpath("compose_spec").joinpath("compose-spec.json")
+
+
+def validate_json_against_schema(values_data: dict, json_schema: dict) -> None:
+    """Validate a data set against a JSON schema
+
+    :type values_data: dict
+    :param values_data: The data to validate
+    :type json_schema: dict
+    :param json_schema: The schema to validate against
+
+    :rtype: None
+    :returns: Nothing
+
+    :raises: ValueError: If the validation fails
+    """
+    try:
+        validate(instance=values_data, schema=json_schema, format_checker=Draft202012Validator.FORMAT_CHECKER)
+
+    except ValidationError as err:
+        readable_error = (
+            f"Error in validating compose file!\nArgument Error: {err.args}\n"
+            f"In Schema Path: {'.'.join(err.absolute_path)}"
+        )
+        raise ValueError(readable_error) from err
 
 
 class _PorterMap:  # pylint: disable=too-many-instance-attributes
@@ -30,8 +58,6 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
     :rtype: None
     :returns: Nothing
     """
-
-    JSON_SCHEMA_FORMAT_CHECKERS = Draft202012Validator.FORMAT_CHECKER
 
     def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
@@ -71,7 +97,8 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         """
         return f'PorterMap(path="{self._path}", release_name="{self._release_name}")'
 
-    def validate_json_schema(self, values_data: dict, values_path: str) -> None:
+    @staticmethod
+    def validate_value_json_schema(values_data: dict, values_path: str) -> None:
         """Validate data against a JSON schema.
 
         :type values_data: dict
@@ -90,7 +117,7 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         with open(json_schema_path, "r", encoding="utf-8") as json_schema_file:
             json_schema = json.load(json_schema_file)
 
-        validate(instance=values_data, schema=json_schema, format_checker=self.JSON_SCHEMA_FORMAT_CHECKERS)
+        validate_json_against_schema(values_data=values_data, json_schema=json_schema)
 
     def get_services(self) -> dict:
         """Get the services data
@@ -294,17 +321,17 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
 
         if self._top_level:
             values = initial_values
-            self.validate_json_schema(values_data=values, values_path=values_path)
+            self.validate_value_json_schema(values_data=values, values_path=values_path)
 
         elif not self._top_level and not initial_values.get("sub_map_values"):
             values_path = os.path.join(self._path, "values.yaml")
             values = self.get_yaml_data(values_path)
-            self.validate_json_schema(values_data=values, values_path=values_path)
+            self.validate_value_json_schema(values_data=values, values_path=values_path)
 
         elif not self._top_level and not initial_values.get("sub_map_values").get(self._name):
             values_path = os.path.join(self._path, "values.yaml")
             values = self.get_yaml_data(values_path)
-            self.validate_json_schema(values_data=values, values_path=values_path)
+            self.validate_value_json_schema(values_data=values, values_path=values_path)
 
         else:
             values = self.get_yaml_data(values_path).get("sub_map_values").get(self._name)
@@ -418,6 +445,25 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
 
         return maps
 
+    @staticmethod
+    def validate_compose_json_schema(compose_data: dict) -> None:
+        """Validate the created compose data against the compose spec JSON schema
+        https://github.com/compose-spec/compose-spec/blob/main/schema/compose-spec.json
+
+        :type compose_data: dict
+        :param compose_data: The compose data
+
+        :rtype: None
+        :returns: Nothing it validates the JSON data against the JSON schema
+        """
+        if not COMPOSE_SPEC.is_file():
+            raise FileNotFoundError(f"compose file json spec not found {COMPOSE_SPEC.as_posix()}")
+
+        with open(COMPOSE_SPEC.as_posix(), "r", encoding="utf-8") as compose_schema_file:
+            compose_json_schema = json.load(compose_schema_file)
+
+        validate_json_against_schema(values_data=compose_data, json_schema=compose_json_schema)
+
     def render_compose(self) -> str:
         """Render the compose file
 
@@ -425,9 +471,14 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
         :returns: The rendered compose file
         """
         render_obj = Render()
-        return render_obj.from_file(
+
+        compose_rendered = render_obj.from_file(
             template_name="compose-layout.j2", render_vars={"compose_data": safe_dump(self._compose)}
         )
+
+        self.validate_compose_json_schema(compose_data=safe_load(compose_rendered))
+
+        return compose_rendered
 
     def _merge_maps(self) -> None:
         """Merge all the maps into a single compose file

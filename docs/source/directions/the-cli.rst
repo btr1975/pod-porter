@@ -11,9 +11,9 @@ pod-porter CLI Help
 .. code-block:: bash
    :caption: Example "pod-porter -h" output
 
-   usage: pod-porter [-h] {template,write,package,un-package,create} ...
+   usage: pod-porter [-h] {template,write,package,un-package,create,validate-compose,validate-values} ...
 
-   pod-porter version: 0.1.0
+   pod-porter version: 1.0.0
 
    options:
      -h, --help            show this help message and exit
@@ -21,13 +21,15 @@ pod-porter CLI Help
    commands:
      Valid commands: a single command is required
 
-     {template,write,package,un-package,create}
+     {template,write,package,un-package,create,validate-compose,validate-values}
                            CLI Help
        template            View the rendered compose file
        write               Write the rendered compose file
        package             Package the map (tar.gz) the map
        un-package          Un-Package the map extract (tar.gz)
        create              Create a new map, with some examples
+       validate-compose    Validate a compose file
+       validate-values     Validate a values file against a schema
 
 pod-porter CLI template command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,3 +123,35 @@ pod-porter CLI create command
    options:
      -h, --help         show this help message and exit
      -m MAP, --map MAP  Path to the map
+
+
+pod-porter CLI validate-compose command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* The create command will create a new map with some examples.
+
+.. code-block:: bash
+   :caption: Example "pod-porter validate-compose -h" output
+
+   usage: pod-porter validate-compose [-h] -f FILE
+
+   options:
+     -h, --help       show this help message and exit
+     -f, --file FILE  Path to the compose file
+
+
+pod-porter CLI validate-values command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* The create command will create a new map with some examples.
+
+.. code-block:: bash
+   :caption: Example "pod-porter validate-values -h" output
+
+   usage: pod-porter validate-values [-h] -f FILE -s SCHEMA
+
+   options:
+     -h, --help            show this help message and exit
+     -f FILE, --file FILE  Path to the values file
+     -s SCHEMA, --schema SCHEMA
+                           Path to the values-schema.json

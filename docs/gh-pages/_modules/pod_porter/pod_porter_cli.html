@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pod_porter.pod_porter_cli &mdash; pod-porter v0.2.2 0.2.2 documentation</title>
+  <title>pod_porter.pod_porter_cli &mdash; pod-porter v1.0.0 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/my_theme.css?v=f7a27adb" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=000c92bf"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
@@ -66,7 +66,7 @@ window.addEventListener("load", load);
           
           
           <a href="../../index.html" class="icon icon-home">
-            pod-porter v0.2.2
+            pod-porter v1.0.0
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -88,7 +88,7 @@ window.addEventListener("load", load);
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pod-porter v0.2.2</a>
+          <a href="../../index.html">pod-porter v1.0.0</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -111,10 +111,14 @@ window.addEventListener("load", load);
 <span class="sd">CLI for pod_porter</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">argparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArgumentParser</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pod_porter.pod_porter</span><span class="w"> </span><span class="kn">import</span> <span class="n">PorterMapsRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">yaml</span><span class="w"> </span><span class="kn">import</span> <span class="n">safe_load</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pod_porter.pod_porter</span><span class="w"> </span><span class="kn">import</span> <span class="n">PorterMapsRunner</span><span class="p">,</span> <span class="n">validate_json_against_schema</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pod_porter.util.file_read_write</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_file</span><span class="p">,</span> <span class="n">create_tar_gz_file</span><span class="p">,</span> <span class="n">extract_tar_gz_file</span><span class="p">,</span> <span class="n">create_new_map</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pod_porter.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">pod_porter_version</span>
 
 
 <div class="viewcode-block" id="common_sub_parser_map_arguments">
@@ -178,7 +182,7 @@ window.addEventListener("load", load);
 <span class="sd">    :rtype: ArgumentParser</span>
 <span class="sd">    :returns: The argument parser</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">arg_parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;pod-porter version: </span><span class="si">{</span><span class="n">pod_porter_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">arg_parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;pod-porter version: </span><span class="si">{</span><span class="n">version</span><span class="p">(</span><span class="s1">&#39;pod-porter&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">subparsers</span> <span class="o">=</span> <span class="n">arg_parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span>
         <span class="n">title</span><span class="o">=</span><span class="s2">&quot;commands&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Valid commands: a single command is required&quot;</span><span class="p">,</span>
@@ -215,13 +219,26 @@ window.addEventListener("load", load);
     <span class="n">arg_parser_map_create</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">which_sub</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">)</span>
     <span class="n">common_sub_parser_map_arguments</span><span class="p">(</span><span class="n">sub_arg_parser</span><span class="o">=</span><span class="n">arg_parser_map_create</span><span class="p">)</span>
 
+    <span class="c1"># This is the sub parser to validate a compose file</span>
+    <span class="n">arg_parser_validate_compose</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;validate-compose&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Validate a compose file&quot;</span><span class="p">)</span>
+    <span class="n">arg_parser_validate_compose</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">which_sub</span><span class="o">=</span><span class="s2">&quot;validate-compose&quot;</span><span class="p">)</span>
+    <span class="n">arg_parser_validate_compose</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--file&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the compose file&quot;</span><span class="p">)</span>
+
+    <span class="c1"># This is the sub parser to validate values file against schema</span>
+    <span class="n">arg_parser_validate_values</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;validate-values&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Validate a values file against a schema&quot;</span>
+    <span class="p">)</span>
+    <span class="n">arg_parser_validate_values</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">which_sub</span><span class="o">=</span><span class="s2">&quot;validate-values&quot;</span><span class="p">)</span>
+    <span class="n">arg_parser_validate_values</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--file&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the values file&quot;</span><span class="p">)</span>
+    <span class="n">arg_parser_validate_values</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--schema&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the values-schema.json&quot;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">arg_parser</span></div>
 
 
 
 <div class="viewcode-block" id="cli">
 <a class="viewcode-back" href="../../source/code/pod_porter.html#pod_porter.pod_porter_cli.cli">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover # pylint: disable=too-many-branches,too-many-statements</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to run the command line</span>
 
 <span class="sd">    :rtype: None</span>
@@ -256,6 +273,41 @@ window.addEventListener("load", load);
 
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">which_sub</span> <span class="o">==</span> <span class="s2">&quot;create&quot;</span><span class="p">:</span>
             <span class="n">create_new_map</span><span class="p">(</span><span class="n">map_name_and_path</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">map</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">which_sub</span> <span class="o">==</span> <span class="s2">&quot;validate-compose&quot;</span><span class="p">:</span>
+            <span class="n">compose_file_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">compose_file_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">compose_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">safe_load</span><span class="p">(</span><span class="n">compose_file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">PorterMapsRunner</span><span class="o">.</span><span class="n">validate_compose_json_schema</span><span class="p">(</span><span class="n">compose_data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">which_sub</span> <span class="o">==</span> <span class="s2">&quot;validate-values&quot;</span><span class="p">:</span>
+            <span class="n">values_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">values_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">values_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">values_file_data</span> <span class="o">=</span> <span class="n">safe_load</span><span class="p">(</span><span class="n">values_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+
+            <span class="n">values_schema_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">values_schema_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">values_schema_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">values_schema_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">values_schema_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">validate_json_against_schema</span><span class="p">(</span><span class="n">values_data</span><span class="o">=</span><span class="n">values_file_data</span><span class="p">,</span> <span class="n">json_schema</span><span class="o">=</span><span class="n">values_schema_data</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> !!! </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2"> !!! </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>

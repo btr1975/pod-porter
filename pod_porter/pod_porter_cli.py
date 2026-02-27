@@ -2,9 +2,13 @@
 CLI for pod_porter
 """
 
+import json
+from pathlib import Path
 from argparse import ArgumentParser
 from importlib.metadata import version
-from pod_porter.pod_porter import PorterMapsRunner
+
+from yaml import safe_load
+from pod_porter.pod_porter import PorterMapsRunner, validate_json_against_schema
 from pod_porter.util.file_read_write import write_file, create_tar_gz_file, extract_tar_gz_file, create_new_map
 
 
@@ -95,10 +99,23 @@ def cli_argument_parser() -> ArgumentParser:
     arg_parser_map_create.set_defaults(which_sub="create")
     common_sub_parser_map_arguments(sub_arg_parser=arg_parser_map_create)
 
+    # This is the sub parser to validate a compose file
+    arg_parser_validate_compose = subparsers.add_parser("validate-compose", help="Validate a compose file")
+    arg_parser_validate_compose.set_defaults(which_sub="validate-compose")
+    arg_parser_validate_compose.add_argument("-f", "--file", required=True, help="Path to the compose file")
+
+    # This is the sub parser to validate values file against schema
+    arg_parser_validate_values = subparsers.add_parser(
+        "validate-values", help="Validate a values file against a schema"
+    )
+    arg_parser_validate_values.set_defaults(which_sub="validate-values")
+    arg_parser_validate_values.add_argument("-f", "--file", required=True, help="Path to the values file")
+    arg_parser_validate_values.add_argument("-s", "--schema", required=True, help="Path to the values-schema.json")
+
     return arg_parser
 
 
-def cli() -> None:  # pragma: no cover
+def cli() -> None:  # pragma: no cover # pylint: disable=too-many-branches,too-many-statements
     """Function to run the command line
 
     :rtype: None
@@ -133,6 +150,41 @@ def cli() -> None:  # pragma: no cover
 
         if args.which_sub == "create":
             create_new_map(map_name_and_path=args.map)
+
+        if args.which_sub == "validate-compose":
+            compose_file_path: Path = Path(args.file)
+
+            if not compose_file_path.is_file():
+                raise FileNotFoundError(f"File not found: {compose_file_path}")
+
+            data = safe_load(compose_file_path.read_text(encoding="utf-8"))
+
+            try:
+                PorterMapsRunner.validate_compose_json_schema(compose_data=data)
+
+            except ValueError as error:
+                print(error)
+
+        if args.which_sub == "validate-values":
+            values_file = Path(args.file)
+
+            if not values_file.is_file():
+                raise FileNotFoundError(f"File not found: {values_file}")
+
+            values_file_data = safe_load(values_file.read_text(encoding="utf-8"))
+
+            values_schema_file = Path(args.schema)
+
+            if not values_schema_file.is_file():
+                raise FileNotFoundError(f"File not found: {values_schema_file}")
+
+            values_schema_data = json.loads(values_schema_file.read_text(encoding="utf-8"))
+
+            try:
+                validate_json_against_schema(values_data=values_file_data, json_schema=values_schema_data)
+
+            except ValueError as error:
+                print(error)
 
     except AttributeError as error:
         print(f"\n !!! {error} !!! \n")

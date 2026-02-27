@@ -29,14 +29,6 @@ pod\_porter.pod\_porter\_cli module
    :show-inheritance:
    :undoc-members:
 
-pod\_porter.version module
---------------------------
-
-.. automodule:: pod_porter.version
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 Module contents
 ---------------
 

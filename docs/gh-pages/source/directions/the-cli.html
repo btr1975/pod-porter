@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pod-porter CLI &mdash; pod-porter v0.2.2 0.2.2 documentation</title>
+  <title>pod-porter CLI &mdash; pod-porter v1.0.0 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/my_theme.css?v=f7a27adb" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=000c92bf"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -31,7 +31,7 @@
           
           
           <a href="../../index.html" class="icon icon-home">
-            pod-porter v0.2.2
+            pod-porter v1.0.0
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -57,6 +57,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-package-command">pod-porter CLI package command</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-un-package-command">pod-porter CLI un-package command</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-create-command">pod-porter CLI create command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-validate-compose-command">pod-porter CLI validate-compose command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pod-porter-cli-validate-values-command">pod-porter CLI validate-values command</a></li>
 </ul>
 </li>
 </ul>
@@ -69,7 +71,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">pod-porter v0.2.2</a>
+          <a href="../../index.html">pod-porter v1.0.0</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -100,9 +102,9 @@
 </ul>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Example “pod-porter -h” output</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">{</span>template,write,package,un-package,create<span class="o">}</span><span class="w"> </span>...
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">{</span>template,write,package,un-package,create,validate-compose,validate-values<span class="o">}</span><span class="w"> </span>...
 
-pod-porter<span class="w"> </span>version:<span class="w"> </span><span class="m">0</span>.1.0
+pod-porter<span class="w"> </span>version:<span class="w"> </span><span class="m">1</span>.0.0
 
 options:
 <span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
@@ -110,13 +112,15 @@ options:
 commands:
 <span class="w">  </span>Valid<span class="w"> </span>commands:<span class="w"> </span>a<span class="w"> </span>single<span class="w"> </span><span class="nb">command</span><span class="w"> </span>is<span class="w"> </span>required
 
-<span class="w">  </span><span class="o">{</span>template,write,package,un-package,create<span class="o">}</span>
+<span class="w">  </span><span class="o">{</span>template,write,package,un-package,create,validate-compose,validate-values<span class="o">}</span>
 <span class="w">                        </span>CLI<span class="w"> </span>Help
 <span class="w">    </span>template<span class="w">            </span>View<span class="w"> </span>the<span class="w"> </span>rendered<span class="w"> </span>compose<span class="w"> </span>file
 <span class="w">    </span>write<span class="w">               </span>Write<span class="w"> </span>the<span class="w"> </span>rendered<span class="w"> </span>compose<span class="w"> </span>file
 <span class="w">    </span>package<span class="w">             </span>Package<span class="w"> </span>the<span class="w"> </span>map<span class="w"> </span><span class="o">(</span>tar.gz<span class="o">)</span><span class="w"> </span>the<span class="w"> </span>map
 <span class="w">    </span>un-package<span class="w">          </span>Un-Package<span class="w"> </span>the<span class="w"> </span>map<span class="w"> </span>extract<span class="w"> </span><span class="o">(</span>tar.gz<span class="o">)</span>
 <span class="w">    </span>create<span class="w">              </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>map,<span class="w"> </span>with<span class="w"> </span>some<span class="w"> </span>examples
+<span class="w">    </span>validate-compose<span class="w">    </span>Validate<span class="w"> </span>a<span class="w"> </span>compose<span class="w"> </span>file
+<span class="w">    </span>validate-values<span class="w">     </span>Validate<span class="w"> </span>a<span class="w"> </span>values<span class="w"> </span>file<span class="w"> </span>against<span class="w"> </span>a<span class="w"> </span>schema
 </pre></div>
 </div>
 </div>
@@ -220,6 +224,40 @@ options:
 options:
 <span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">         </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
 <span class="w">  </span>-m<span class="w"> </span>MAP,<span class="w"> </span>--map<span class="w"> </span>MAP<span class="w">  </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>map
+</pre></div>
+</div>
+</div>
+</section>
+<section id="pod-porter-cli-validate-compose-command">
+<h2>pod-porter CLI validate-compose command<a class="headerlink" href="#pod-porter-cli-validate-compose-command" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The create command will create a new map with some examples.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Example “pod-porter validate-compose -h” output</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>validate-compose<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-f<span class="w"> </span>FILE
+
+options:
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">       </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>-f,<span class="w"> </span>--file<span class="w"> </span>FILE<span class="w">  </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>compose<span class="w"> </span>file
+</pre></div>
+</div>
+</div>
+</section>
+<section id="pod-porter-cli-validate-values-command">
+<h2>pod-porter CLI validate-values command<a class="headerlink" href="#pod-porter-cli-validate-values-command" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The create command will create a new map with some examples.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Example “pod-porter validate-values -h” output</span><a class="headerlink" href="#id8" title="Link to this code"></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pod-porter<span class="w"> </span>validate-values<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span>-f<span class="w"> </span>FILE<span class="w"> </span>-s<span class="w"> </span>SCHEMA
+
+options:
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>-f<span class="w"> </span>FILE,<span class="w"> </span>--file<span class="w"> </span>FILE<span class="w">  </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>values<span class="w"> </span>file
+<span class="w">  </span>-s<span class="w"> </span>SCHEMA,<span class="w"> </span>--schema<span class="w"> </span>SCHEMA
+<span class="w">                        </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>values-schema.json
 </pre></div>
 </div>
 </div>
