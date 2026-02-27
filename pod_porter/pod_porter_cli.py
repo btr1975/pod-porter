@@ -4,6 +4,9 @@ CLI for pod_porter
 
 from argparse import ArgumentParser
 from importlib.metadata import version
+
+from jsonschema import ValidationError
+from yaml import safe_load
 from pod_porter.pod_porter import PorterMapsRunner
 from pod_porter.util.file_read_write import write_file, create_tar_gz_file, extract_tar_gz_file, create_new_map
 
@@ -95,6 +98,11 @@ def cli_argument_parser() -> ArgumentParser:
     arg_parser_map_create.set_defaults(which_sub="create")
     common_sub_parser_map_arguments(sub_arg_parser=arg_parser_map_create)
 
+    # This is the sub parser to create a new map
+    arg_parser_validate_compose = subparsers.add_parser("validate-compose", help="Validate a compose file")
+    arg_parser_validate_compose.set_defaults(which_sub="validate-compose")
+    arg_parser_validate_compose.add_argument("-f", "--file", required=True, help="Path to the compose file")
+
     return arg_parser
 
 
@@ -133,6 +141,16 @@ def cli() -> None:  # pragma: no cover
 
         if args.which_sub == "create":
             create_new_map(map_name_and_path=args.map)
+
+        if args.which_sub == "validate-compose":
+            with open(args.file, "r", encoding="utf-8") as file:
+                data = safe_load(file.read())
+
+            try:
+                PorterMapsRunner.validate_compose_json_schema(compose_data=data)
+
+            except ValueError as error:
+                print(error)
 
     except AttributeError as error:
         print(f"\n !!! {error} !!! \n")

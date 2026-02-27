@@ -7,13 +7,14 @@ from pathlib import Path
 import json
 import os
 from yaml import safe_load, safe_dump
-from jsonschema import validate, Draft202012Validator
+from jsonschema import validate, Draft202012Validator, ValidationError
 from pod_porter.render.render import Render
 from pod_porter.util.directories import create_temp_working_directory, delete_temp_working_directory
 from pod_porter.util.file_read_write import write_file, extract_tar_gz_file
 from pod_porter.util.schemas import MapSchema
 
 JSON_SCHEMA_FORMAT_CHECKERS = Draft202012Validator.FORMAT_CHECKER
+COMPOSE_SPEC: Path = Path(__file__).parent.joinpath("render").joinpath("compose_spec").joinpath("compose-spec.json")
 
 
 class _PorterMap:  # pylint: disable=too-many-instance-attributes
@@ -72,7 +73,8 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         """
         return f'PorterMap(path="{self._path}", release_name="{self._release_name}")'
 
-    def validate_value_json_schema(self, values_data: dict, values_path: str) -> None:
+    @staticmethod
+    def validate_value_json_schema(values_data: dict, values_path: str) -> None:
         """Validate data against a JSON schema.
 
         :type values_data: dict
@@ -341,8 +343,6 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
     :returns: Nothing
     """
 
-    COMPOSE_SPEC: Path = Path(__file__).parent.joinpath("render").joinpath("compose_spec").joinpath("compose-spec.json")
-
     def __init__(self, path: str, release_name: Optional[str] = None, values_override: Optional[str] = None) -> None:
         self._path = path
         self._release_name = release_name or "release-name"
@@ -421,8 +421,10 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
 
         return maps
 
-    def validate_compose_json_schema(self, compose_data: dict) -> None:
+    @staticmethod
+    def validate_compose_json_schema(compose_data: dict) -> None:
         """Validate the created compose data against the compose spec JSON schema
+        https://github.com/compose-spec/compose-spec/blob/main/schema/compose-spec.json
 
         :type compose_data: dict
         :param compose_data: The compose data
@@ -430,13 +432,21 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
         :rtype: None
         :returns: Nothing it validates the JSON data against the JSON schema
         """
-        if not self.COMPOSE_SPEC.is_file():
-            raise FileNotFoundError(f"compose file json spec not found {self.COMPOSE_SPEC.as_posix()}")
+        if not COMPOSE_SPEC.is_file():
+            raise FileNotFoundError(f"compose file json spec not found {COMPOSE_SPEC.as_posix()}")
 
-        with open(self.COMPOSE_SPEC.as_posix(), "r", encoding="utf-8") as compose_schema_file:
+        with open(COMPOSE_SPEC.as_posix(), "r", encoding="utf-8") as compose_schema_file:
             compose_json_schema = json.load(compose_schema_file)
 
-        validate(instance=compose_data, schema=compose_json_schema, format_checker=JSON_SCHEMA_FORMAT_CHECKERS)
+        try:
+            validate(instance=compose_data, schema=compose_json_schema, format_checker=JSON_SCHEMA_FORMAT_CHECKERS)
+
+        except ValidationError as err:
+            readable_error = (
+                f"Error in validating compose file!\nArgument Error: {err.args}\n"
+                f"In Schema Path: {'.'.join(err.absolute_path)}"
+            )
+            raise ValueError(readable_error)
 
     def render_compose(self) -> str:
         """Render the compose file

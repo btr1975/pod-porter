@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pod-porter"
 dynamic = ["readme"]
-version = "0.2.3"
+version = "1.0.0"
 requires-python = ">=3.10"
 description = "Like Helm but for Container Compose Files"
 keywords = [
