@@ -135,4 +135,5 @@ rst_epilog = """
 .. _`Docker`: https://docker.com
 .. _Jinja2: https://jinja.palletsprojects.com/en/stable/
 .. _`JSON Schema Docs`: https://json-schema.org/docs
+.. _`Official Compose Schema`: https://github.com/compose-spec/compose-spec/blob/main/schema/compose-spec.json
 """

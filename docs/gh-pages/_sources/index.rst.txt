@@ -20,6 +20,8 @@ I also hope that this tool can help people who want to learn HELM_ cause they ar
 In the same way that HELM_ is a package manager for Kubernetes_, pod-porter is a package manager for Podman_ and
 Docker_.
 
+The generated compose file is validated against the `Official Compose Schema`_.
+
 `Some Porter Examples <https://github.com/btr1975/automation-framework/tree/main/porter>`_
 
 .. toctree::

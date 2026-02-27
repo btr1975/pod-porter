@@ -17,6 +17,30 @@ JSON_SCHEMA_FORMAT_CHECKERS = Draft202012Validator.FORMAT_CHECKER
 COMPOSE_SPEC: Path = Path(__file__).parent.joinpath("render").joinpath("compose_spec").joinpath("compose-spec.json")
 
 
+def validate_json_against_schema(values_data: dict, json_schema: dict) -> None:
+    """Validate a data set against a JSON schema
+
+    :type values_data: dict
+    :param values_data: The data to validate
+    :type json_schema: dict
+    :param json_schema: The schema to validate against
+
+    :rtype: None
+    :returns: Nothing
+
+    :raises: ValueError: If the validation fails
+    """
+    try:
+        validate(instance=values_data, schema=json_schema, format_checker=Draft202012Validator.FORMAT_CHECKER)
+
+    except ValidationError as err:
+        readable_error = (
+            f"Error in validating compose file!\nArgument Error: {err.args}\n"
+            f"In Schema Path: {'.'.join(err.absolute_path)}"
+        )
+        raise ValueError(readable_error) from err
+
+
 class _PorterMap:  # pylint: disable=too-many-instance-attributes
     """A class to represent the PorterMap
 
@@ -93,7 +117,7 @@ class _PorterMap:  # pylint: disable=too-many-instance-attributes
         with open(json_schema_path, "r", encoding="utf-8") as json_schema_file:
             json_schema = json.load(json_schema_file)
 
-        validate(instance=values_data, schema=json_schema, format_checker=JSON_SCHEMA_FORMAT_CHECKERS)
+        validate_json_against_schema(values_data=values_data, json_schema=json_schema)
 
     def get_services(self) -> dict:
         """Get the services data
@@ -438,15 +462,7 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
         with open(COMPOSE_SPEC.as_posix(), "r", encoding="utf-8") as compose_schema_file:
             compose_json_schema = json.load(compose_schema_file)
 
-        try:
-            validate(instance=compose_data, schema=compose_json_schema, format_checker=JSON_SCHEMA_FORMAT_CHECKERS)
-
-        except ValidationError as err:
-            readable_error = (
-                f"Error in validating compose file!\nArgument Error: {err.args}\n"
-                f"In Schema Path: {'.'.join(err.absolute_path)}"
-            )
-            raise ValueError(readable_error) from err
+        validate_json_against_schema(values_data=compose_data, json_schema=compose_json_schema)
 
     def render_compose(self) -> str:
         """Render the compose file
