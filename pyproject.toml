@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 name = "pod-porter"
 dynamic = ["readme"]
 version = "0.2.3"
-requires-python = ">=3.9,<3.14"
+requires-python = ">=3.10"
 description = "Like Helm but for Container Compose Files"
 keywords = [
     "docker",
@@ -42,29 +42,29 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",]
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",]
 
 dependencies = [
-    "jinja2~=3.1.4",
-    "jsonschema[format-nongpl]>=4.23.0",
-    "pyyaml~=6.0.2",
+    "jinja2~=3.1.6",
+    "jsonschema[format-nongpl]>=4.26.0",
+    "pyyaml~=6.0.3",
 ]
 
 [dependency-groups]
 dev = [
-    "bandit>=1.8.3",
-    "black>=25.1.0",
-    "myst-parser>=3.0.1",
-    "pylint>=3.3.6",
-    "pytest-cov>=6.1.1",
-    "sphinx>=7.4.7",
-    "sphinx-rtd-theme>=3.0.2",
-    "sphinxcontrib-mermaid>=1.0.0",
-    "tomli>=2.2.1; python_version < '3.11'",
+    "bandit",
+    "black",
+    "myst-parser",
+    "pylint",
+    "pytest-cov",
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinxcontrib-mermaid",
+    "tomli; python_version < '3.11'",
 ]
 
 [project.urls]
