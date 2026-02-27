@@ -84,7 +84,7 @@ include = [
 
 # Add or remove file extensions to include the data
 [tool.setuptools.package-data]
-"*" = ["*.j2"]
+"*" = ["*.j2", "*.json"]
 
 [tool.setuptools]
 zip-safe = false
