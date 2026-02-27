@@ -446,7 +446,7 @@ class PorterMapsRunner:  # pylint: disable=too-many-instance-attributes
                 f"Error in validating compose file!\nArgument Error: {err.args}\n"
                 f"In Schema Path: {'.'.join(err.absolute_path)}"
             )
-            raise ValueError(readable_error)
+            raise ValueError(readable_error) from err
 
     def render_compose(self) -> str:
         """Render the compose file

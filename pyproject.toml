@@ -56,7 +56,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "bandit",
+    "bandit>=1.9.4",
     "black",
     "myst-parser",
     "pylint",

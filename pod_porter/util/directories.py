@@ -2,7 +2,7 @@
 utilities for directories
 """
 
-import os
+from pathlib import Path
 import tempfile
 import shutil
 from uuid import uuid4
@@ -14,11 +14,10 @@ def create_temp_working_directory() -> str:
     :rtype: str
     :returns: The path to the temporary working directory
     """
-    working_directory = os.path.join(tempfile.gettempdir(), str(uuid4()))
+    working_directory = Path(tempfile.gettempdir()).joinpath(str(uuid4()))
+    working_directory.mkdir(exist_ok=True)
 
-    os.makedirs(working_directory)
-
-    return working_directory
+    return working_directory.as_posix()
 
 
 def delete_temp_working_directory(working_directory: str) -> None:

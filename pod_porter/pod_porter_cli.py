@@ -5,7 +5,6 @@ CLI for pod_porter
 from argparse import ArgumentParser
 from importlib.metadata import version
 
-from jsonschema import ValidationError
 from yaml import safe_load
 from pod_porter.pod_porter import PorterMapsRunner
 from pod_porter.util.file_read_write import write_file, create_tar_gz_file, extract_tar_gz_file, create_new_map
